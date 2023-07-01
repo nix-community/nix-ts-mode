@@ -1,0 +1,20 @@
+# Test file
+test.nix
+
+# Nix
+result
+\#*.*\#
+
+# Direnv
+.direnv
+.env
+
+# pre-commit.nix
+.pre-commit-config.yaml
+
+# Emacs backup files
+*.*~
+
+# General
+.DS_Store
+*.dump
