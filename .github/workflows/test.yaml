@@ -27,10 +27,10 @@ jobs:
       - uses: nixbuild/nix-quick-install-action@v25
         with:
           nix_version: 2.16.1
-      - run: nix build .#emacs-${{ matrix.attr }}
       - uses: cachix/cachix-action@v12
         with:
           name: emacs-ci
+      - run: nix build .#emacs-${{ matrix.attr }}
       - run: |
           ./results/bin/emacs -Q --batch \
             --load ert \
