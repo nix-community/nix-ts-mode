@@ -1,5 +1,8 @@
 name: Package test
 
+env:
+  CACHE_NAME: nix-ts-mode
+
 on:
   pull_request:
     branches:
@@ -29,7 +32,9 @@ jobs:
           nix_version: 2.16.1
       - uses: cachix/cachix-action@v12
         with:
-          name: emacs-ci
+          name: '${{ env.CACHE_NAME }}'
+	  authToken: '${{ secrets.NIX_TS_MODE_CACHIX_TOKEN }}'
+	  extraPullNames: emacs-ci
       - run: nix build .#emacs-${{ matrix.attr }}
       - name: Run ERT tests
         run: |
