@@ -34,6 +34,7 @@ jobs:
       - name: Run ERT tests
         run: |
           ./result/bin/emacs -Q --batch \
+            --directory $(pwd) \
             --load ert \
             --load ./tests/nix-ts-mode-font-lock-tests.el \
             --funcall ert-run-tests-batch-and-exit
