@@ -36,26 +36,39 @@
 ;; Features
 
 (ert-deftest nix-bracket ()
-  (check-faces "{ test = [(doFunc \"test\")]; }"
-	       '(("(" font-lock-bracket-face)
-		 (")" font-lock-bracket-face)
-		 ("[" font-lock-bracket-face)
-		 ("]" font-lock-bracket-face)
-		 ("{" font-lock-bracket-face)
-		 ("}" font-lock-bracket-face))))
+  (check-faces
+   "{
+  test = [
+    (doFunc \"test\")
+  ];
+}"
+   '(("(" font-lock-bracket-face)
+     (")" font-lock-bracket-face)
+     ("[" font-lock-bracket-face)
+     ("]" font-lock-bracket-face)
+     ("{" font-lock-bracket-face)
+     ("}" font-lock-bracket-face))))
 
 (ert-deftest nix-comment ()
   (check-faces "# This is a Nix comment, alright"
 	       '(("Nix comment" font-lock-comment-face))))
 
 (ert-deftest nix-delimiter ()
-  (check-faces "{attribute.attribute = {param, ...}: {};}"
-	       '(("." font-lock-delimiter-face)
-		 ("," font-lock-delimiter-face)
-		 (";" font-lock-delimiter-face))))
+  (check-faces
+   "{ attribute.attribute = {param, ...}: {}; }"
+   '(("." font-lock-delimiter-face)
+     ("," font-lock-delimiter-face)
+     (";" font-lock-delimiter-face))))
 
 (ert-deftest nix-keyword ()
-  (check-faces "let pkgs = {test = "";}; in rec { test = with pkgs; test; }"
+  (check-faces "
+let
+  pkgs = {
+    test = \"\";
+  };
+in rec {
+  test = with pkgs; test;
+}"
 	       '(("let" font-lock-keyword-face)
 		 ("in" font-lock-keyword-face)
 		 ("with" font-lock-keyword-face)
