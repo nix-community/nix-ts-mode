@@ -33,7 +33,8 @@ jobs:
       - run: nix build .#emacs-${{ matrix.attr }}
       - name: Run ERT tests
         run: |
-          ./result/bin/emacs -Q --batch \
+          ./result/bin/emacs \
+            --batch \
             --directory $(pwd) \
             --load ert \
             --load ./tests/nix-ts-mode-font-lock-tests.el \
