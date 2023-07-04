@@ -1,0 +1,38 @@
+name: Package test
+
+on:
+  pull_request:
+    branches:
+      - "trunk"
+    paths:
+      - "**"
+      - "!**.md"
+      - "!**.org"
+  push:
+    branches:
+      - "trunk"
+    paths:
+      - "**"
+      - "!**.md"
+      - "!**.org"
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        attr: ["release-snapshot", "snapshot"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.5.3
+      - uses: nixbuild/nix-quick-install-action@v25
+        with:
+          nix_version: 2.16.1
+      - run: nix build .#${{ matrix.attr }}
+      - uses: cachix/cachix-action@v12
+        with:
+          name: emacs-ci
+      - run: |
+          ./results/bin/emacs -Q --batch \
+            --load ert \
+            --load ./tests/nix-ts-mode-font-lock-tests.el \
+            --funcall ert-run-tests-batch-and-exit

@@ -15,8 +15,8 @@
 
 ;;; Code:
 
-(if (version< emacs-version "29.1")
-    (error "`nix-ts-mode` requires at least Emacs 29.1 for tree-sitter support"))
+(if (version< emacs-version "29")
+    (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
 
 (require 'treesit)
 
@@ -32,7 +32,7 @@
 
 (defcustom nix-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `nix-ts-mode'."
-  :version "29.1"
+  :version "29"
   :type 'integer
   :safe 'integerp
   :group 'nix)

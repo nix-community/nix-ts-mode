@@ -6,12 +6,33 @@
     nixpkgs-unstable,
     nixpkgs-master,
     emacs-unstable,
+    nix-emacs-ci,
     pre-commit-nix,
     ...
   }: let
     supportedSystems = import systems;
     forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
   in {
+    packages = forAllSystems (system: let
+      versions = ["emacs-release-snapshot" "emacs-snapshot"];
+
+      pkgs = nixpkgs-master.legacyPackages.${system};
+
+      addNixGrammar = emacs:
+        with pkgs;
+          (emacsPackagesFor emacs).emacsWithPackages (epkgs: [
+            (epkgs.manualPackages.treesit-grammars.with-grammars
+              (grammars: [
+                grammars.tree-sitter-nix
+              ]))
+          ]);
+    in
+      builtins.listToAttrs (builtins.map (version: {
+          name = version;
+          value = addNixGrammar nix-emacs-ci.packages.${system}.${version};
+        })
+        versions));
+
     devShells = forAllSystems (system: let
       pkgs = import nixpkgs-unstable {
         inherit system;
@@ -22,7 +43,7 @@
               passthru =
                 prev.passthru
                 // {
-                  treeSitter = true;
+                  withTreeSitter = true;
                 };
             });
           })
@@ -98,6 +119,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs";
     emacs-unstable.url = "github:nix-community/emacs-overlay";
+    nix-emacs-ci.url = "github:purcell/nix-emacs-ci";
     systems.url = "github:nix-systems/default";
     pre-commit-nix.url = "github:cachix/pre-commit-hooks.nix";
   };
