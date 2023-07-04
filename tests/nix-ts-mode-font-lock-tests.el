@@ -14,11 +14,6 @@
        ,@body
        (kill-buffer ,test-buffer-name))))
 
-(defun check-syntax-face-match-range (beg end face)
-  ""
-  (while (< beg end)
-    (setq beg (1+ beg))))
-
 (defun check-faces (content pairs)
   ""
   (with-nix-buffer
@@ -31,7 +26,7 @@
      (cl-destructuring-bind (string face) pair
        (let ((case-fold-search nil))
 	 (search-forward string))
-       (check-syntax-face-match-range (match-beginning 0) (match-end 0) face)))))
+       (should (eql (text-property-not-all (match-beginning 0) (match-end 0) 'face face) nil))))))
 
 ;; Features
 
