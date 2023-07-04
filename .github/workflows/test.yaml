@@ -27,7 +27,7 @@ jobs:
       - uses: nixbuild/nix-quick-install-action@v25
         with:
           nix_version: 2.16.1
-      - run: nix build .#${{ matrix.attr }}
+      - run: nix build .#emacs-${{ matrix.attr }}
       - uses: cachix/cachix-action@v12
         with:
           name: emacs-ci
