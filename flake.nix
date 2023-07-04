@@ -29,7 +29,18 @@
     in
       builtins.listToAttrs (builtins.map (version: {
           name = version;
-          value = addNixGrammar nix-emacs-ci.packages.${system}.${version};
+          value =
+            addNixGrammar
+            ((nix-emacs-ci.packages.${system}.${version}.override {
+                withTreeSitter = true;
+              })
+              .overrideAttrs (prev: {
+                passthru =
+                  prev.passthru
+                  // {
+                    withTreeSitter = true;
+                  };
+              }));
         })
         versions));
 
