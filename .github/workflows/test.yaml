@@ -31,7 +31,9 @@ jobs:
         with:
           name: emacs-ci
       - run: nix build .#emacs-${{ matrix.attr }}
-      - run: |
+      - name: Run ERT tests
+        run: |
+          ls -a
           ./results/bin/emacs -Q --batch \
             --load ert \
             --load ./tests/nix-ts-mode-font-lock-tests.el \
