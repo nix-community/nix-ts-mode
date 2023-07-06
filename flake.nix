@@ -14,14 +14,17 @@
     forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
   in {
     packages = forAllSystems (system: let
-      versions = ["emacs-release-snapshot" "emacs-snapshot"];
+      versions = [
+        "emacs-release-snapshot" # 29
+        "emacs-snapshot" # 30
+      ];
 
-      pkgs = nixpkgs-master.legacyPackages.${system};
+      pkgs = nixpkgs-unstable.legacyPackages.${system};
 
       addNixGrammar = emacs:
         with pkgs;
-          (emacsPackagesFor emacs).emacsWithPackages (epkgs: [
-            (epkgs.manualPackages.treesit-grammars.with-grammars
+          (emacsPackagesFor emacs).emacsWithPackages (_: [
+            (nixpkgs-master.legacyPackages.${system}.emacsPackages.manualPackages.treesit-grammars.with-grammars
               (grammars: [
                 grammars.tree-sitter-nix
               ]))

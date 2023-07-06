@@ -36,7 +36,7 @@ jobs:
           authToken: '${{ secrets.NIX_TS_MODE_CACHIX_TOKEN }}'
           extraPullNames: emacs-ci
       - run: nix build .#emacs-${{ matrix.attr }}
-      - name: Run ERT tests
+      - name: Run tests
         run: |
           ./result/bin/emacs \
             --batch \

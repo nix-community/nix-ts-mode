@@ -23,9 +23,6 @@
 (unless (treesit-available-p)
   (error "`nix-ts-mode` requires Emacs to be built with tree-sitter support"))
 
-(unless (treesit-language-available-p 'nix)
-  (error "Nix tree-sitter grammar is not installed or is unable to be found"))
-
 (declare-function treesit-parser-create "treesit.c")
 
 ;; Other
