@@ -1,7 +1,19 @@
-;;  -*- lexical-binding: t -*-
+;;; nix-ts-mode-font-lock-tests.el --- Font lock tests for `nix-ts-mode`. -*- lexical-binding: t -*-
+
+;; Maintainer: Remi Gelinas <mail@remigelin.as>
+;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
+;; Version: 0.1.0-alpha
+;; Keywords: nix
+;; Package-Requires: ((emacs "29.1"))
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+
+
+;; Tests for tree-sitter powered font-locking in `nix-ts-mode`.
 
 ;;; Code:
-
 (require 'ert)
 (require 'nix-ts-mode)
 

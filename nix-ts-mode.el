@@ -14,8 +14,7 @@
 ;; A major mode for editing Nix expressions, powered by the new built-in tree-sitter support in Emacs 29.1.
 
 ;;; Code:
-
-(if (version< emacs-version "29")
+(if (version<= emacs-version "29.1")
     (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
 
 (require 'treesit)
@@ -29,7 +28,7 @@
 
 (defcustom nix-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `nix-ts-mode'."
-  :version "29"
+  :version "29.1"
   :type 'integer
   :safe 'integerp
   :group 'nix)
@@ -72,8 +71,8 @@
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	 `(seq bol (or "throw" "abort")
-	       eol))
+	        `(seq bol (or "throw" "abort")
+	          eol))
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
@@ -149,10 +148,25 @@
        ((node-is "]") parent-bol 0)
        ((parent-is "parenthesized_expression") parent-bol ,offset)))))
 
+;; Keymap
+(defvar nix-ts-mode-map
+  (let ((map (make-sparse-keymap)))
+    map)
+  "Keymap for `nix-ts-mode'.")
+
+;; Syntax map
+(defvar nix-ts-mode--syntax-table
+  (let ((table (make-syntax-table)))
+    table)
+  "Syntax table for `nix-ts-mode'.")
+
 ;;;###autoload
 (define-derived-mode nix-ts-mode prog-mode "Nix"
-  "Major mode for editing Nix expressions, powered by treesitter."
+  "Major mode for editing Nix expressions, powered by treesitter.
+
+\\{nix-ts-mode-map}"
   :group 'nix
+  :syntax-table nix-ts-mode--syntax-table
   
   (when (treesit-ready-p 'nix)
     (treesit-parser-create 'nix)
@@ -168,7 +182,7 @@
     
     (setq-local treesit-font-lock-level 4)
 
-    ;; Indent
+    ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
     
     (treesit-major-mode-setup)))

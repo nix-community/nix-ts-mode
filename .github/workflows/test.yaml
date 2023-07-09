@@ -21,26 +21,28 @@ on:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        attr: ["release-snapshot", "snapshot"]
-    runs-on: ubuntu-latest
+        emacs_version:
+          - snapshot
+          - release-snapshot
     steps:
       - uses: actions/checkout@v3.5.3
-      - uses: nixbuild/nix-quick-install-action@v25
+
+      - uses: purcell/setup-emacs@master
         with:
-          nix_version: 2.16.1
-      - uses: cachix/cachix-action@v12
+          version: ${{ matrix.emacs_version }}
+
+      - uses: conao3/setup-cask@master
         with:
-          name: '${{ env.CACHE_NAME }}'
-          authToken: '${{ secrets.NIX_TS_MODE_CACHIX_TOKEN }}'
-          extraPullNames: emacs-ci
-      - run: nix build .#emacs-${{ matrix.attr }}
-      - name: Run tests
+          version: '0.8.4'
+      
+      - name: Install Nix grammar
         run: |
-          ./result/bin/emacs \
-            --batch \
-            --directory $(pwd) \
-            --load ert \
-            --load ./tests/nix-ts-mode-font-lock-tests.el \
-            --funcall ert-run-tests-batch-and-exit
+          emacs -batch \
+            --eval="(setq treesit-language-source-alist '((nix "https://github.com/nix-community/tree-sitter-nix")))" \
+            --eval="(treesit-install-language-grammar 'nix')"
+
+      - name: Run tests
+        run: make test
