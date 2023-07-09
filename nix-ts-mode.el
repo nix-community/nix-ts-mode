@@ -14,8 +14,8 @@
 ;; A major mode for editing Nix expressions, powered by the new built-in tree-sitter support in Emacs 29.1.
 
 ;;; Code:
-(if (version<= emacs-version "29.1")
-    (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
+(unless (version< emacs-version "29.1")
+  (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
 
 (require 'treesit)
 
@@ -71,8 +71,8 @@
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	        `(seq bol (or "throw" "abort")
-	          eol))
+	 `(seq bol (or "throw" "abort")
+	       eol))
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
