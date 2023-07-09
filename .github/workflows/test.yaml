@@ -26,6 +26,8 @@ jobs:
       matrix:
         emacs_version:
           - snapshot
+          - release-snapshot
+
     steps:
       - uses: actions/checkout@v3.5.3
 
