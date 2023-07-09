@@ -1,0 +1,3 @@
+#+TITLE: nix-ts-mode.el
+
+#+PROPERTY: LOGGING nil
