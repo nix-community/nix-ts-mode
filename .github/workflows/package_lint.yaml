@@ -1,4 +1,4 @@
-name: Run ERT tests
+name: Lint package
 
 on:
   pull_request:
@@ -35,10 +35,6 @@ jobs:
       - uses: conao3/setup-cask@master
         with:
           version: snapshot
-      
-      - name: Install Nix grammar
-        run: |
-          emacs -batch -l test/scripts/install-nix-grammar.el
 
-      - name: Run tests
-        run: make test
+      - name: Lint
+        run: make package_lint
