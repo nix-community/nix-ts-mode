@@ -40,8 +40,7 @@ jobs:
       
       - name: Install Nix grammar
         run: |
-          emacs -batch \
-            --eval '(setq treesit-language-source-alist \'((nix "https://github.com/nix-community/tree-sitter-nix")))' '(treesit-install-language-grammar \'nix)'
+          emacs -batch -l test/scripts/install-nix-grammar.el
 
       - name: Run tests
         run: make test
