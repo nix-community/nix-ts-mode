@@ -15,6 +15,9 @@ result
 # Emacs backup files
 *.*~
 
+# Cask
+.cask
+
 # General
 .DS_Store
 *.dump
