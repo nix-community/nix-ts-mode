@@ -36,7 +36,7 @@ jobs:
 
       - uses: conao3/setup-cask@master
         with:
-          version: '0.8.4'
+          version: snapshot
       
       - name: Install Nix grammar
         run: |
