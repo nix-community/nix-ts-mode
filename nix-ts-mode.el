@@ -1,4 +1,4 @@
-;;; nix-ts-mode.el --- Major mode for editing Nix expressions, powered by tree-sitter. -*- lexical-binding: t -*-
+;;; nix-ts-mode.el --- Major mode for editing Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
@@ -33,11 +33,11 @@
   :safe 'integerp
   :group 'nix)
 
-(defvar nix--treesit-builtins
+(defvar nix-ts--treesit-builtins
   ;; nix eval --impure --expr 'with builtins; filter (x: !(elem x [ "abort" "derivation" "import" "throw" ]) && isFunction builtins.${x}) (attrNames builtins)'
   '("add" "addErrorContext" "all" "any" "appendContext" "attrNames" "attrValues" "baseNameOf" "bitAnd" "bitOr" "bitXor" "break" "catAttrs" "ceil" "compareVersions" "concatLists" "concatMap" "concatStringsSep" "deepSeq" "derivationStrict" "dirOf" "div" "elem" "elemAt" "fetchGit" "fetchMercurial" "fetchTarball" "fetchTree" "fetchurl" "filter" "filterSource" "findFile" "floor" "foldl'" "fromJSON" "fromTOML" "functionArgs" "genList" "genericClosure" "getAttr" "getContext" "getEnv" "getFlake" "groupBy" "hasAttr" "hasContext" "hashFile" "hashString" "head" "intersectAttrs" "isAttrs" "isBool" "isFloat" "isFunction" "isInt" "isList" "isNull" "isPath" "isString" "length" "lessThan" "listToAttrs" "map" "mapAttrs" "match" "mul" "parseDrvName" "partition" "path" "pathExists" "placeholder" "readDir" "readFile" "removeAttrs" "replaceStrings" "scopedImport" "seq" "sort" "split" "splitVersion" "storePath" "stringLength" "sub" "substring" "tail" "toFile" "toJSON" "toPath" "toString" "toXML" "trace" "traceVerbose" "tryEval" "typeOf" "unsafeDiscardOutputDependency" "unsafeDiscardStringContext" "unsafeGetAttrPos" "zipAttrsWith"))
 
-(defvar nix--treesit-constants
+(defvar nix-ts--treesit-constants
   ;; nix eval --impure --expr 'with builtins; filter (x: !(isFunction builtins.${x} || isBool builtins.${x})) (attrNames builtins)'
   '("builtins" "currentSystem" "currentTime" "langVersion" "nixPath" "nixVersion" "null" "storeDir"))
 
@@ -112,7 +112,7 @@
    `((variable_expression name: (identifier) @font-lock-builtin-face
 			  (:match
 			   ,(rx-to-string
-			     `(seq bol (or ,@nix--treesit-builtins)
+			     `(seq bol (or ,@nix-ts--treesit-builtins)
 				   eol))
 			   @font-lock-builtin-face)))
    :language 'nix
@@ -120,7 +120,7 @@
    `((variable_expression name: (identifier) @font-lock-constant-face
 			  (:match
 			   ,(rx-to-string
-			     `(seq bol (or ,@nix--treesit-constants "true" "false")
+			     `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
 				   eol))
 			   @font-lock-constant-face)))
    :language 'nix
