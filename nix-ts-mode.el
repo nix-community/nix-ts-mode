@@ -14,8 +14,8 @@
 ;; A major mode for editing Nix expressions, powered by the new built-in tree-sitter support in Emacs 29.1.
 
 ;;; Code:
-(unless (version< emacs-version "29.1")
-  (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
+;; (unless (version< emacs-version "29.1")
+;;   (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
 
 (require 'treesit)
 
