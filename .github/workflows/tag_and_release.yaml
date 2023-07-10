@@ -1,0 +1,84 @@
+name: Tag and release
+
+env:
+  NIXPKGS_REF: github:NixOS/nixpkgs/nixpkgs-unstable
+
+on:
+  push:
+    branches:
+      - "trunk"
+
+jobs:
+  compare_versions:
+    runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.gen_versions.outputs.CURRENT_VERSION }}
+      next_version: ${{ steps.gen_versions.outputs.NEXT_VERSION }}
+      bump: ${{ steps.gen_versions.outputs.DO_BUMP }}
+    steps:
+      - uses: actions/checkout@v3.5.3
+      - uses: cachix/install-nix-action@v22
+
+      - name: Install dependencies
+        run: |
+          nix profile install ${{ env.NIXPKGS_REF }}#convco
+      
+      - id: gen_versions
+        run: |
+          CURRENT_VERSION=$(convco version)
+          NEXT_VERSION=$(convco version -b)
+          DO_BUMP=$(expr "${CURRENT_VERSION}" == "${NEXT_VERSION}")
+
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> "$GITHUB_ENV"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> "$GITHUB_ENV"
+          echo "DO_BUMP=$DO_BUMP" >> "$GITHUB_ENV"
+
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "DO_BUMP=$DO_BUMP" >> "$GITHUB_OUTPUT"
+
+  bump_and_release:
+    if: needs.compare_versions.outputs.bump
+    runs-on: ubuntu-latest
+    needs: compare_versions
+    env:
+      CURRENT_VERSION: ${{needs.compare_versions.outputs.current_version}}
+      NEXT_VERSION: ${{needs.compare_versions.outputs.next_version}}
+    steps:
+      - uses: actions/checkout@v3.5.3
+      - uses: cachix/install-nix-action@v22
+
+      - name: Install dependencies
+        run: |
+          nix profile install ${{ env.NIXPKGS_REF }}#convco
+
+      - name: Bump version in package files
+        run: |
+          find **/*.el \
+            -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ env.NEXT_VERSION }}|g" {} \;
+      - run: |
+          git add **/*.el
+          git commit \
+            -m "chore: release v${{ env.NEXT_VERSION }}"
+      
+      - id: generate_changelog
+        run:
+          CHANGELOG=$(convco changelog -m 1)
+
+          echo "CHANGELOG=$CHANGELOG" >> "$GITHUB_ENV"
+          echo "CHANGELOG=$CHANGELOG" >> "$GITHUB_OUTPUT"
+
+      - run: |
+          git tag \
+            -a ${{ env.NEXT_VERSION }} \
+            -m ${{ env.CHANGELOG }}
+      
+      - run: git push --follow-tags
+
+      - name: Make release
+        uses: ncipollo/release-action@v1
+          with:
+            makeLatest: true
+            tag: ${{ env.NEXT_VERSION }}
+            body: ${{ env.CHANGELOG }}
+
