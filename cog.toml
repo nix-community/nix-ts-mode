@@ -1,0 +1,3 @@
+tag_prefix = ""
+branch_whitelist = ["trunk"]
+ignore_merge_commits = true
