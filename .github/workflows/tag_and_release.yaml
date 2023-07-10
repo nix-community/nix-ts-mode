@@ -77,8 +77,7 @@ jobs:
 
       - name: Make release
         uses: ncipollo/release-action@v1
-          with:
-            makeLatest: true
-            tag: ${{ env.NEXT_VERSION }}
-            body: ${{ env.CHANGELOG }}
-
+        with:
+          makeLatest: true
+          tag: ${{ env.NEXT_VERSION }}
+          body: ${{ env.CHANGELOG }}
