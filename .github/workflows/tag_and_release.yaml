@@ -87,10 +87,17 @@ jobs:
           git push
       
       - id: generate_changelog
-      
-        # Escape multiline string properly
-        # https://github.com/orgs/community/discussions/26288
-        run: convco changelog > CHANGELOG.md
+        name: Generate changelog
+        run: |
+          convco changelog \
+            -m 1 \
+            -u ${{ env.NEXT_VERSION }} \
+            --include-hidden-sections \
+            --prefix="" \
+            $(git rev-parse HEAD) \
+            > CHANGELOG.md
+          
+          cat CHANGELOG.md
       
       - name: Create and tag release
         env:
