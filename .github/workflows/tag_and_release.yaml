@@ -92,7 +92,7 @@ jobs:
         run:
           CHANGELOG=$(convco changelog)
 
-          echo "$CHANGELOG" > tag_message.md
+          echo "$CHANGELOG" > CHANGELOG.md
 
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
@@ -102,7 +102,7 @@ jobs:
       - run: |
           git tag \
             -a "${{ env.NEXT_VERSION }}" \
-            -F tag_message.md
+            -F CHANGELOG.md
       
       - run: git push --follow-tags
 
@@ -111,5 +111,4 @@ jobs:
         with:
           makeLatest: true
           tag: ${{ env.NEXT_VERSION }}
-          body: |
-              ${{ env.CHANGELOG }}
+          bodyFile: CHANGELOG.md
