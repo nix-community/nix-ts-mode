@@ -87,9 +87,6 @@ jobs:
             -name "*.el" \
             -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ env.NEXT_VERSION }}|g" {} \;
 
-      - name: Log version changes
-        run: git diff -- ./\*.el
-
       - name: Commit and push version changes
         run: |
           git add -- ./\*.el
