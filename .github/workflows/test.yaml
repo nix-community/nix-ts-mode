@@ -1,6 +1,7 @@
 name: Run ERT tests
 
 on:
+  workflow_call:
   pull_request:
     branches:
       - "trunk"
@@ -42,3 +43,6 @@ jobs:
 
       - name: Run tests
         run: make test
+      
+      - name: Cleanup
+        run: make clean
