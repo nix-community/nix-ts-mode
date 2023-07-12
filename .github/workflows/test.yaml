@@ -9,13 +9,6 @@ on:
       - "**"
       - "!**.md"
       - "!**.org"
-  push:
-    branches:
-      - "trunk"
-    paths:
-      - "**"
-      - "!**.md"
-      - "!**.org"
 
 jobs:
   test:

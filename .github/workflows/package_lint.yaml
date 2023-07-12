@@ -9,16 +9,9 @@ on:
       - "**"
       - "!**.md"
       - "!**.org"
-  push:
-    branches:
-      - "trunk"
-    paths:
-      - "**"
-      - "!**.md"
-      - "!**.org"
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:

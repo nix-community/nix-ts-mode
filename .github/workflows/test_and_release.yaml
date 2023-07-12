@@ -1,4 +1,4 @@
-name: Tag and release
+name: Test and release
 
 env:
   NIXPKGS_REF: github:NixOS/nixpkgs/nixpkgs-unstable
@@ -69,8 +69,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
 
-      - id: generate_changelog
-        name: Generate changelog
+      - name: Generate changelog
         run: |
           convco changelog \
             -m 1 \
