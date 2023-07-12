@@ -69,6 +69,19 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
 
+      - id: generate_changelog
+        name: Generate changelog
+        run: |
+          convco changelog \
+            -m 1 \
+            -u ${{ env.NEXT_VERSION }} \
+            --include-hidden-sections \
+            --prefix="" \
+            $(git rev-parse HEAD) \
+            > CHANGELOG.md
+          
+          cat CHANGELOG.md
+
       - name: Bump version in package files
         run: |
           find . \
@@ -85,19 +98,6 @@ jobs:
             --no-verify \
             -m "chore: release v${{ env.NEXT_VERSION }}"
           git push
-      
-      - id: generate_changelog
-        name: Generate changelog
-        run: |
-          convco changelog \
-            -m 1 \
-            -u ${{ env.NEXT_VERSION }} \
-            --include-hidden-sections \
-            --prefix="" \
-            $(git rev-parse HEAD) \
-            > CHANGELOG.md
-          
-          cat CHANGELOG.md
       
       - name: Create and tag release
         env:
