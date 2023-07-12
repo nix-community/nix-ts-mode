@@ -50,6 +50,7 @@ jobs:
 
   bump_and_release:
     if: needs.compare_versions.outputs.bump
+    permissions: write-all
     runs-on: ubuntu-latest
     needs: compare_versions
     env:
@@ -74,8 +75,11 @@ jobs:
             -name "*.el" \
             -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ env.NEXT_VERSION }}|g" {} \;
 
-      - run: |
-          git diff -- ./\*.el
+      - name: Log version changes
+        run: git diff -- ./\*.el
+
+      - name: Commit version changes
+        run: |
           git add -- ./\*.el
           git commit \
             --no-verify \
