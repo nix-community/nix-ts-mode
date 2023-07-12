@@ -66,8 +66,8 @@ jobs:
       
       - name: Configure Git credentials
         run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
 
       - name: Bump version in package files
         run: |
@@ -78,37 +78,25 @@ jobs:
       - name: Log version changes
         run: git diff -- ./\*.el
 
-      - name: Commit version changes
+      - name: Commit and push version changes
         run: |
           git add -- ./\*.el
           git commit \
             --no-verify \
             -m "chore: release v${{ env.NEXT_VERSION }}"
+          git push
       
       - id: generate_changelog
       
         # Escape multiline string properly
         # https://github.com/orgs/community/discussions/26288
-        run:
-          CHANGELOG=$(convco changelog)
-
-          echo "$CHANGELOG" > CHANGELOG.md
-
-          CHANGELOG="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-
-          echo "CHANGELOG=$CHANGELOG" >> "$GITHUB_ENV"
-      - run: |
-          git tag \
-            -a "${{ env.NEXT_VERSION }}" \
-            -F CHANGELOG.md
+        run: convco changelog > CHANGELOG.md
       
-      - run: git push --follow-tags
-
-      - name: Make release
-        uses: ncipollo/release-action@v1
-        with:
-          makeLatest: true
-          tag: ${{ env.NEXT_VERSION }}
-          bodyFile: CHANGELOG.md
+      - name: Create and tag release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create \
+            ${{ env.NEXT_VERSION }} \
+            --target $(git rev-parse HEAD) \
+            -F CHANGELOG.md
