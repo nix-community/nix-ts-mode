@@ -88,7 +88,7 @@ jobs:
         run: |
           find . \
             -name "*.el" \
-            -exec sed -i -E "s|^(;; Version: ).*\$|\1v${{ env.NEXT_VERSION }}|g" {} \;
+            -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ env.NEXT_VERSION }}|g" {} \;
 
       - name: Commit and push version changes
         run: |
