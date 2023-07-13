@@ -71,12 +71,13 @@ jobs:
 
       - name: Generate changelog
         run: |
+          pwd
           convco changelog \
             -m 1 \
             -u ${{ env.NEXT_VERSION }} \
             --include-hidden-sections \
             --prefix="" \
-            $(git rev-parse HEAD) \
+            --output CHANGELOG.md
         
         #> CHANGELOG.md
         #cat CHANGELOG.md
