@@ -50,9 +50,7 @@ jobs:
 
   bump_and_release:
     if: needs.compare_versions.outputs.bump
-    permissions:
-      - read-all
-      - contents: write
+    permissions: write-all
     runs-on: ubuntu-latest
     needs: compare_versions
     env:
