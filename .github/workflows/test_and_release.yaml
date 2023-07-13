@@ -52,7 +52,7 @@ jobs:
           fi
 
   bump_and_release:
-    if: needs.compare_versions.outputs.bump != 'true'
+    if: needs.compare_versions.outputs.bump == 'true'
     permissions:
       contents: write
     runs-on: ubuntu-latest
