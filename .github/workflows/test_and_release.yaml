@@ -79,7 +79,7 @@ jobs:
         run: |
           convco changelog \
             -m 1 \
-            -u ${{ env.NEXT_VERSION }} \
+            -u v${{ env.NEXT_VERSION }} \
             --include-hidden-sections \
             --prefix="" \
             --output CHANGELOG.md
@@ -88,7 +88,7 @@ jobs:
         run: |
           find . \
             -name "*.el" \
-            -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ env.NEXT_VERSION }}|g" {} \;
+            -exec sed -i -E "s|^(;; Version: ).*\$|\1v${{ env.NEXT_VERSION }}|g" {} \;
 
       - name: Commit and push version changes
         run: |
@@ -103,6 +103,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create \
-            ${{ env.NEXT_VERSION }} \
+            v${{ env.NEXT_VERSION }} \
             --target $(git rev-parse HEAD) \
             -F CHANGELOG.md
