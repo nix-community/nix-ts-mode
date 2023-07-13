@@ -77,9 +77,9 @@ jobs:
             --include-hidden-sections \
             --prefix="" \
             $(git rev-parse HEAD) \
-            > CHANGELOG.md
-          
-          cat CHANGELOG.md
+        
+        #> CHANGELOG.md
+        #cat CHANGELOG.md
 
       - name: Bump version in package files
         run: |
@@ -93,6 +93,8 @@ jobs:
           git commit \
             --no-verify \
             -m "chore: release v${{ env.NEXT_VERSION }}"
+
+#git push
       
       # - name: Create and tag release
       #   env:
