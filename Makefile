@@ -15,6 +15,6 @@ test: lisp
 package_lint: lisp
 	EMACS=$(EMACS) cask emacs \
 		-batch \
-		-l package-lint
+		-l package-lint \
 		--eval "(setq package-lint-batch-fail-on-warnings nil)" \
 		-f package-lint-batch-and-exit nix-ts-mode.el
