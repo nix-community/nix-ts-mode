@@ -71,16 +71,14 @@ jobs:
 
       - name: Generate changelog
         run: |
-          pwd
+          git log -1
           convco changelog \
             -m 1 \
             -u ${{ env.NEXT_VERSION }} \
             --include-hidden-sections \
             --prefix="" \
             --output CHANGELOG.md
-        
-        #> CHANGELOG.md
-        #cat CHANGELOG.md
+            cat CHANGELOG.md
 
       - name: Bump version in package files
         run: |
