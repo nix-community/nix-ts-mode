@@ -3,7 +3,7 @@
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
 ;; Version: 0.1.1
-;; Keywords: nix
+;; Keywords: nix languages
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is NOT part of GNU Emacs.
