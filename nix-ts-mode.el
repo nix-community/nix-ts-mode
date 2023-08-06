@@ -87,15 +87,15 @@
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	 `(seq bol (or "throw" "abort")
-	       eol))
+         `(seq bol (or "throw" "abort")
+               eol))
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	 `(seq bol "or" eol))
+         `(seq bol "or" eol))
        @font-lock-keyword-face)))
 
    :language 'nix
@@ -126,19 +126,19 @@
    :language 'nix
    :feature 'builtin
    `((variable_expression name: (identifier) @font-lock-builtin-face
-			  (:match
-			   ,(rx-to-string
-			     `(seq bol (or ,@nix-ts--treesit-builtins)
-				   eol))
-			   @font-lock-builtin-face)))
+                          (:match
+                           ,(rx-to-string
+                             `(seq bol (or ,@nix-ts--treesit-builtins)
+                                   eol))
+                           @font-lock-builtin-face)))
    :language 'nix
    :feature 'constant
    `((variable_expression name: (identifier) @font-lock-constant-face
-			  (:match
-			   ,(rx-to-string
-			     `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
-				   eol))
-			   @font-lock-constant-face)))
+                          (:match
+                           ,(rx-to-string
+                             `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
+                                   eol))
+                           @font-lock-constant-face)))
    :language 'nix
    :feature 'attribute
    `((attrpath
@@ -183,13 +183,13 @@
 \\{nix-ts-mode-map}"
   :group 'nix
   :syntax-table nix-ts-mode--syntax-table
-  
+
   (when (treesit-ready-p 'nix)
     (treesit-parser-create 'nix)
 
     ;; Font locking
     (setq-local treesit-font-lock-settings nix-ts-mode--font-lock-settings)
-    
+
     (setq-local treesit-font-lock-feature-list
                 '((comment builtin)
                   (keyword string path)
@@ -198,8 +198,12 @@
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
-    
+
     (treesit-major-mode-setup)))
 
 (provide 'nix-ts-mode)
 ;;; nix-ts-mode.el ends here
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
