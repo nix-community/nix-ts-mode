@@ -39,11 +39,15 @@
 
 ;; Other
 
+(defgroup nix-ts nil
+  "Major mode for editing Nix expressions."
+  :prefix "nix-ts-"
+  :group 'languages)
+
 (defcustom nix-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `nix-ts-mode'."
   :type 'integer
-  :safe 'integerp
-  :group 'nix)
+  :safe 'integerp)
 
 (defvar nix-ts--treesit-builtins
   ;; nix eval --impure --expr 'with builtins; filter (x: !(elem x [ "abort" "derivation" "import" "throw" ]) && isFunction builtins.${x}) (attrNames builtins)'
