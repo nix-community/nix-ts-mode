@@ -1,4 +1,4 @@
-;;; nix-ts-mode.el --- Major mode for editing Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
+;;; nix-ts-mode.el --- Major mode for Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
