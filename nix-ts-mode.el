@@ -195,8 +195,6 @@
                   (keyword string path)
                   (number constant attribute)
                   (bracket delimiter operator ellipses function)))
-    
-    (setq-local treesit-font-lock-level 4)
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
