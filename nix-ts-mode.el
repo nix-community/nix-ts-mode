@@ -41,7 +41,6 @@
 
 (defcustom nix-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `nix-ts-mode'."
-  :version "29.1"
   :type 'integer
   :safe 'integerp
   :group 'nix)
