@@ -42,7 +42,7 @@
 
 ;; Features
 
-(ert-deftest nix-bracket ()
+(ert-deftest nix-ts-bracket ()
   (check-faces
    "{
   test = [
@@ -56,18 +56,18 @@
      ("{" font-lock-bracket-face)
      ("}" font-lock-bracket-face))))
 
-(ert-deftest nix-comment ()
+(ert-deftest nix-ts-comment ()
   (check-faces "# This is a Nix comment, alright"
 	       '(("Nix comment" font-lock-comment-face))))
 
-(ert-deftest nix-delimiter ()
+(ert-deftest nix-ts-delimiter ()
   (check-faces
    "{ attribute.attribute = {param, ...}: {}; }"
    '(("." font-lock-delimiter-face)
      ("," font-lock-delimiter-face)
      (";" font-lock-delimiter-face))))
 
-(ert-deftest nix-keyword ()
+(ert-deftest nix-ts-keyword ()
   (check-faces "
 let
   pkgs = {
