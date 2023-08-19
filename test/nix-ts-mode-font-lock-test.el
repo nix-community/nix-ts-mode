@@ -20,7 +20,7 @@
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
   `(with-temp-buffer
-     (nix-ts-mode)
+     (delay-mode-hooks (nix-ts-mode))
      ,@body))
 
 (defun check-faces (content pairs)
