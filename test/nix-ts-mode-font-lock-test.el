@@ -35,7 +35,15 @@
      (cl-destructuring-bind (string face) pair
        (let ((case-fold-search nil))
 	 (search-forward string))
-       (should (not (text-property-not-all (match-beginning 0) (match-end 0) 'face face)))))))
+       (let* ((beg (match-beginning 0))
+              (end (match-end 0))
+              (prop-ranges (object-intervals (buffer-substring beg end)))
+              (face-ranges (cl-loop for range in prop-ranges
+                                    for face = (plist-get (elt range 2) 'face)
+                                    when face
+                                    collect (list (elt range 0) (elt range 1) face))))
+         (should (equal `(,string ,face-ranges)
+                        `(,string ((0 ,(- end beg) ,face))))))))))
 
 ;; Features
 
