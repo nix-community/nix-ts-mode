@@ -19,9 +19,10 @@
 
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
-  `(with-temp-buffer
-     (delay-mode-hooks (nix-ts-mode))
-     ,@body))
+  `(let ((treesit-font-lock-level 4))
+     (with-temp-buffer
+       (delay-mode-hooks (nix-ts-mode))
+       ,@body)))
 
 (defun check-faces (content pairs)
   ""
