@@ -29,7 +29,7 @@
    (let ((pos (point)))
      (insert content)
      (save-excursion
-       (treesit-font-lock-fontify-region pos (point))))
+       (treesit-font-lock-fontify-region pos (point) t)))
    (dolist (pair pairs)
      (goto-char (point-min))
      (cl-destructuring-bind (string face) pair
