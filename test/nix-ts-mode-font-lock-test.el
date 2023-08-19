@@ -19,12 +19,9 @@
 
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
-  (let ((test-buffer-name "*nix-ts-mode-test-buffer*"))
-    `(save-current-buffer
-       (set-buffer (get-buffer-create ,test-buffer-name))
-       (nix-ts-mode)
-       ,@body
-       (kill-buffer ,test-buffer-name))))
+  `(with-temp-buffer
+     (nix-ts-mode)
+     ,@body))
 
 (defun check-faces (content pairs)
   ""
@@ -38,7 +35,7 @@
      (cl-destructuring-bind (string face) pair
        (let ((case-fold-search nil))
 	 (search-forward string))
-       (should (eql (text-property-not-all (match-beginning 0) (match-end 0) 'face face) nil))))))
+       (should (not (text-property-not-all (match-beginning 0) (match-end 0) 'face face)))))))
 
 ;; Features
 
