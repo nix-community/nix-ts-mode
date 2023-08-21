@@ -1,17 +1,30 @@
-;;; nix-ts-mode.el --- Major mode for editing Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
+;;; nix-ts-mode.el --- Major mode for Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
 ;; Version: 0.1.1
-;; Keywords: nix
+;; Keywords: nix languages
 ;; Package-Requires: ((emacs "29.1"))
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
 
-
-;; A major mode for editing Nix expressions, powered by the new built-in tree-sitter support in Emacs 29.1.
+;; A major mode for editing Nix expressions, powered by the new
+;; built-in tree-sitter support in Emacs 29.1.
 
 ;;; Code:
 ;; (unless (version< emacs-version "29.1")
@@ -26,12 +39,15 @@
 
 ;; Other
 
+(defgroup nix-ts nil
+  "Major mode for editing Nix expressions."
+  :prefix "nix-ts-"
+  :group 'languages)
+
 (defcustom nix-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `nix-ts-mode'."
-  :version "29.1"
   :type 'integer
-  :safe 'integerp
-  :group 'nix)
+  :safe 'integerp)
 
 (defvar nix-ts--treesit-builtins
   ;; nix eval --impure --expr 'with builtins; filter (x: !(elem x [ "abort" "derivation" "import" "throw" ]) && isFunction builtins.${x}) (attrNames builtins)'
@@ -71,15 +87,15 @@
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	 `(seq bol (or "throw" "abort")
-	       eol))
+         `(seq bol (or "throw" "abort")
+               eol))
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string
-	 `(seq bol "or" eol))
+         `(seq bol "or" eol))
        @font-lock-keyword-face)))
 
    :language 'nix
@@ -110,19 +126,19 @@
    :language 'nix
    :feature 'builtin
    `((variable_expression name: (identifier) @font-lock-builtin-face
-			  (:match
-			   ,(rx-to-string
-			     `(seq bol (or ,@nix-ts--treesit-builtins)
-				   eol))
-			   @font-lock-builtin-face)))
+                          (:match
+                           ,(rx-to-string
+                             `(seq bol (or ,@nix-ts--treesit-builtins)
+                                   eol))
+                           @font-lock-builtin-face)))
    :language 'nix
    :feature 'constant
    `((variable_expression name: (identifier) @font-lock-constant-face
-			  (:match
-			   ,(rx-to-string
-			     `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
-				   eol))
-			   @font-lock-constant-face)))
+                          (:match
+                           ,(rx-to-string
+                             `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
+                                   eol))
+                           @font-lock-constant-face)))
    :language 'nix
    :feature 'attribute
    `((attrpath
@@ -167,25 +183,27 @@
 \\{nix-ts-mode-map}"
   :group 'nix
   :syntax-table nix-ts-mode--syntax-table
-  
+
   (when (treesit-ready-p 'nix)
     (treesit-parser-create 'nix)
 
     ;; Font locking
     (setq-local treesit-font-lock-settings nix-ts-mode--font-lock-settings)
-    
+
     (setq-local treesit-font-lock-feature-list
                 '((comment builtin)
                   (keyword string path)
                   (number constant attribute)
                   (bracket delimiter operator ellipses function)))
-    
-    (setq-local treesit-font-lock-level 4)
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
-    
+
     (treesit-major-mode-setup)))
 
 (provide 'nix-ts-mode)
 ;;; nix-ts-mode.el ends here
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:

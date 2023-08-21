@@ -14,8 +14,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         emacs_version:
+          - 29.1
           - snapshot
           - release-snapshot
 

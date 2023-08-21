@@ -19,12 +19,10 @@
 
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
-  (let ((test-buffer-name "*nix-ts-mode-test-buffer*"))
-    `(save-current-buffer
-       (set-buffer (get-buffer-create ,test-buffer-name))
-       (nix-ts-mode)
-       ,@body
-       (kill-buffer ,test-buffer-name))))
+  `(let ((treesit-font-lock-level 4))
+     (with-temp-buffer
+       (delay-mode-hooks (nix-ts-mode))
+       ,@body)))
 
 (defun check-faces (content pairs)
   ""
@@ -32,17 +30,25 @@
    (let ((pos (point)))
      (insert content)
      (save-excursion
-       (treesit-font-lock-fontify-region pos (point))))
+       (treesit-font-lock-fontify-region pos (point) t)))
    (dolist (pair pairs)
      (goto-char (point-min))
      (cl-destructuring-bind (string face) pair
        (let ((case-fold-search nil))
 	 (search-forward string))
-       (should (eql (text-property-not-all (match-beginning 0) (match-end 0) 'face face) nil))))))
+       (let* ((beg (match-beginning 0))
+              (end (match-end 0))
+              (prop-ranges (object-intervals (buffer-substring beg end)))
+              (face-ranges (cl-loop for range in prop-ranges
+                                    for face = (plist-get (elt range 2) 'face)
+                                    when face
+                                    collect (list (elt range 0) (elt range 1) face))))
+         (should (equal `(,string ,face-ranges)
+                        `(,string ((0 ,(- end beg) ,face))))))))))
 
 ;; Features
 
-(ert-deftest nix-bracket ()
+(ert-deftest nix-ts-bracket ()
   (check-faces
    "{
   test = [
@@ -56,18 +62,18 @@
      ("{" font-lock-bracket-face)
      ("}" font-lock-bracket-face))))
 
-(ert-deftest nix-comment ()
+(ert-deftest nix-ts-comment ()
   (check-faces "# This is a Nix comment, alright"
 	       '(("Nix comment" font-lock-comment-face))))
 
-(ert-deftest nix-delimiter ()
+(ert-deftest nix-ts-delimiter ()
   (check-faces
    "{ attribute.attribute = {param, ...}: {}; }"
    '(("." font-lock-delimiter-face)
      ("," font-lock-delimiter-face)
      (";" font-lock-delimiter-face))))
 
-(ert-deftest nix-keyword ()
+(ert-deftest nix-ts-keyword ()
   (check-faces "
 let
   pkgs = {
