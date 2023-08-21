@@ -1,3 +1,26 @@
-#+TITLE: nix-ts-mode.el
+#+TITLE: nix-ts-mode
 
 #+PROPERTY: LOGGING nil
+
+[[https://melpa.org/#/nix-ts-mode][file:https://melpa.org/packages/nix-ts-mode-badge.svg]]
+[[https://github.com/remi-gelinas/nix-ts-mode/actions/workflows/test_and_release.yaml][https://img.shields.io/github/actions/workflow/status/remi-gelinas/nix-ts-mode/test_and_release.yaml.svg?label=Tests&event=push&branch=trunk]]
+
+An Emacs major mode for editing Nix expressions, powered by the new
+built-in tree-sitter support in Emacs 29 and the community-maintained [[https://github.com/nix-community/tree-sitter-nix][Nix tree-sitter grammar]].
+
+** Usage
+
+~nix-mode~ only provides syntax highlighting for now, but will eventually support other tree-sitter powered features such as sexp-movement and smart indenting.
+After installing, enable the mode for Nix files like so:
+
+#+BEGIN_SRC emacs-lisp
+    (require 'nix-ts-mode)
+    (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode))
+#+END_SRC
+
+Or with ~use-package~:
+
+#+BEGIN_SRC emacs-lisp
+    (use-package nix-ts-mode
+     :mode "\\.nix\\'")
+#+END_SRC
