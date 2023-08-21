@@ -1,3 +1,9 @@
-#+TITLE: nix-ts-mode.el
+#+TITLE: nix-ts-mode
 
 #+PROPERTY: LOGGING nil
+
+[[https://melpa.org/#/nix-ts-mode][file:https://melpa.org/packages/nix-ts-mode-badge.svg]]
+[[https://github.com/remi-gelinas/nix-ts-mode/actions/workflows/test_and_release.yaml][https://img.shields.io/github/actions/workflow/status/remi-gelinas/nix-ts-mode/test_and_release.yaml?event=push&branch=trunk.svg]]
+
+An Emacs major mode for editing Nix expressions, powered by the new
+built-in tree-sitter support in Emacs 29.
