@@ -2,7 +2,7 @@
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Keywords: nix
 ;; Package-Requires: ((emacs "29.1"))
 
