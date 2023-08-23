@@ -10,7 +10,7 @@ built-in tree-sitter support in Emacs 29 and the community-maintained [[https://
 
 ** Usage
 
-~nix-mode~ only provides syntax highlighting for now, but will eventually support other tree-sitter powered features such as sexp-movement and smart indenting.
+~nix-ts-mode~ only provides syntax highlighting for now, but will eventually support other tree-sitter powered features such as sexp-movement and smart indenting.
 After installing, enable the mode for Nix files like so:
 
 #+BEGIN_SRC emacs-lisp
