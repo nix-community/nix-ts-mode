@@ -151,8 +151,12 @@
    :language 'nix
    :feature 'function
    `((function_expression
-      ":" @font-lock-misc-punctuation-face)))
+      ":" @font-lock-misc-punctuation-face))
 
+   :language 'nix
+   :feature 'error
+   :override t
+   '((ERROR) @font-lock-warning-face))
   "Tree-sitter font-lock settings for `nix-ts-mode'.")
 
 ;; Indentation
@@ -206,7 +210,7 @@
                 '((comment builtin)
                   (keyword string path)
                   (number constant attribute)
-                  (bracket delimiter operator ellipses function)))
+                  (bracket delimiter error operator ellipses function)))
 
     ;; Comments
     (setq-local comment-start "# ")
