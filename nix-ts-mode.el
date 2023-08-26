@@ -233,6 +233,10 @@ Return nil if there is no name or if NODE is not a defun node."
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
 
+    ;; Imenu.
+    (setq-local treesit-simple-imenu-settings
+                `((nil "\\`binding\\'" nil nil)))
+
     ;; Navigation.
     (setq-local treesit-defun-type-regexp (rx (or "binding")))
     (setq-local treesit-defun-name-function #'nix-ts-mode--defun-name)
