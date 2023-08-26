@@ -36,6 +36,8 @@
   (error "`nix-ts-mode` requires Emacs to be built with tree-sitter support"))
 
 (declare-function treesit-parser-create "treesit.c")
+(declare-function treesit-node-child-by-field-name "treesit.c")
+(declare-function treesit-node-type "treesit.c")
 
 ;; Other
 
@@ -196,6 +198,14 @@
     table)
   "Syntax table for `nix-ts-mode'.")
 
+(defun nix-ts-mode--defun-name (node)
+  "Return the defun name of NODE.
+Return nil if there is no name or if NODE is not a defun node."
+  (pcase (treesit-node-type node)
+    ("binding"
+     (treesit-node-text
+      (treesit-node-child-by-field-name node "attrpath") t))))
+
 ;;;###autoload
 (define-derived-mode nix-ts-mode prog-mode "Nix"
   "Major mode for editing Nix expressions, powered by treesitter.
@@ -222,6 +232,10 @@
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
+
+    ;; Navigation.
+    (setq-local treesit-defun-type-regexp (rx (or "binding")))
+    (setq-local treesit-defun-name-function #'nix-ts-mode--defun-name)
 
     (treesit-major-mode-setup)))
 
