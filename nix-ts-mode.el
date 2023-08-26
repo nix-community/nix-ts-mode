@@ -157,12 +157,20 @@
 
 ;; Indentation
 (defvar nix-ts-mode-indent-rules
-  (let ((offset nix-ts-mode-indent-offset))
-    `((nix
-       ((node-is "}") parent-bol 0)
-       ((node-is ")") parent-bol 0)
-       ((node-is "]") parent-bol 0)
-       ((parent-is "parenthesized_expression") parent-bol ,offset)))))
+  `((nix
+     ((parent-is "source_code") column-0 0)
+     ((node-is "]") parent-bol 0)
+     ((node-is ")") parent-bol 0)
+     ((node-is "}") parent-bol 0)
+     ((node-is "binding_set") parent-bol nix-ts-mode-indent-offset)
+     ((node-is "indented_string_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "formals") parent-bol 0)
+     ((parent-is "binding_set") parent-bol 0)
+     ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)))
+  "Tree-sitter indent rules for `nix-ts-mode'.")
 
 ;; Keymap
 (defvar nix-ts-mode-map
