@@ -211,7 +211,6 @@ Return nil if there is no name or if NODE is not a defun node."
   "Major mode for editing Nix expressions, powered by treesitter.
 
 \\{nix-ts-mode-map}"
-  :group 'nix
   :syntax-table nix-ts-mode--syntax-table
 
   (when (treesit-ready-p 'nix)
