@@ -181,6 +181,10 @@
 ;; Syntax map
 (defvar nix-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?#  "<"      table)
+    (modify-syntax-entry ?\n ">"      table)
+    (modify-syntax-entry ?/  ". 124b" table)
+    (modify-syntax-entry ?*  ". 23"   table)
     table)
   "Syntax table for `nix-ts-mode'.")
 
@@ -203,6 +207,10 @@
                   (keyword string path)
                   (number constant attribute)
                   (bracket delimiter operator ellipses function)))
+
+    ;; Comments
+    (setq-local comment-start "# ")
+    (setq-local comment-start-skip "#+\\s-*")
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
