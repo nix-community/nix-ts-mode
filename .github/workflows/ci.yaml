@@ -1,8 +1,5 @@
 name: CI
 
-env:
-  EMACS_VERSIONS: '["29.1", "snapshot", "release-snapshot"]'
-
 on:
   pull_request:
     branches:
@@ -14,14 +11,19 @@ on:
 permissions: {}
 
 jobs:
-  set-env:
+  emacs-versions:
     runs-on: ubuntu-latest
     outputs:
-      EMACS_VERSIONS: ${{ steps.set-env.outputs.EMACS_VERSIONS }}
+      EMACS_VERSIONS: ${{ steps.set-emacs-versions.outputs.EMACS_VERSIONS }}
+    permissions:
+      contents: read
     steps:
-      - id: set-env
+      - uses: actions/checkout@v3.6.0
+      - uses: cachix/install-nix-action@v22
+      - id: set-emacs-versions
         run: |
-          echo "EMACS_VERSIONS=${{ env.EMACS_VERSIONS }}" >> "$GITHUB_OUTPUT"
+          EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
+          echo "EMACS_VERSIONS=$EMACS_VERSIONS" >> "$GITHUB_OUTPUT"
 
   file-changes:
     runs-on: ubuntu-latest
@@ -45,20 +47,20 @@ jobs:
     uses: ./.github/workflows/lint-package.yaml
     permissions:
       contents: read
-    needs: [set-env, file-changes]
+    needs: [emacs-versions, file-changes]
     if: needs.file-changes.outputs.package-sources == 'true'
     secrets: inherit
     with:
-      emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
 
   test-package:
     uses: ./.github/workflows/test.yaml
     permissions:
       contents: read
-    needs: [set-env, file-changes]
+    needs: [emacs-versions, file-changes]
     secrets: inherit
     with:
-      emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
 
   lint-nix:
     uses: ./.github/workflows/lint-nix.yaml
