@@ -10,6 +10,8 @@
     supportedSystems = import systems;
     forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
   in {
+    supportedEmacsVersions = ["29.1" "release" "release-snapshot"];
+
     devShells = forAllSystems (system: let
       pre-commit-check = pre-commit-nix.lib.${system}.run {
         src = ./.;
