@@ -42,7 +42,7 @@ jobs:
           filters: .github/file-filters.yaml
 
   lint-package:
-    uses: .github/workflows/lint-package.yaml
+    uses: ./.github/workflows/lint-package.yaml
     permissions:
       contents: read
     needs: [set-env, file-changes]
@@ -52,7 +52,7 @@ jobs:
       emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
 
   test-package:
-    uses: .github/workflows/test.yaml
+    uses: ./.github/workflows/test.yaml
     permissions:
       contents: read
     needs: [set-env, file-changes]
@@ -61,7 +61,7 @@ jobs:
       emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
 
   lint-nix:
-    uses: .github/workflows/lint-nix.yaml
+    uses: ./.github/workflows/lint-nix.yaml
     if: needs.file-changes.outputs.nix-sources == 'true'
     permissions:
       contents: read

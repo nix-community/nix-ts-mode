@@ -31,7 +31,7 @@ jobs:
           echo "EMACS_VERSIONS=$EMACS_VERSIONS" >> "$GITHUB_OUTPUT"
 
   lint-package:
-    uses: .github/workflows/lint-package.yaml
+    uses: ./.github/workflows/lint-package.yaml
     needs: emacs-versions
     secrets: inherit
     permissions:
@@ -40,7 +40,7 @@ jobs:
       emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
 
   test-package:
-    uses: .github/workflows/test.yaml
+    uses: ./.github/workflows/test.yaml
     needs: emacs-versions
     secrets: inherit
     permissions:
