@@ -25,6 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3.6.0
       - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: "${{ env.EXTRA_NIX_CONFIG }}"
       - id: set-emacs-versions
         run: |
           EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
@@ -62,6 +65,9 @@ jobs:
         with:
           fetch-depth: 0
       - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: "${{ env.EXTRA_NIX_CONFIG }}"
       - id: gen_versions
         run: |
           nix profile install --inputs-from . nixpkgs#convco

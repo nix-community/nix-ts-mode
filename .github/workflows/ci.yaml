@@ -1,5 +1,10 @@
 name: CI
 
+env:
+  EXTRA_NIX_CONFIG: |
+    substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+    trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+
 on:
   pull_request:
     branches:
@@ -20,6 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3.6.0
       - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: "${{ env.EXTRA_NIX_CONFIG }}"
       - id: set-emacs-versions
         run: |
           EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
