@@ -1,14 +1,15 @@
-name: Run ERT tests
+name: Test
 
 on:
   workflow_call:
+    inputs:
+      emacs-versions:
+        required: true
+        type: string
+
   pull_request:
     branches:
       - "trunk"
-    paths:
-      - "**"
-      - "!**.md"
-      - "!**.org"
 
 jobs:
   test:
@@ -16,28 +17,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        emacs_version:
-          - 29.1
-          - snapshot
-          - release-snapshot
+        emacs_version: ${{ fromJson(inputs.emacs-versions) }}
 
     steps:
-      - uses: actions/checkout@v3.5.3
-
+      - uses: actions/checkout@v3.6.0
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-
       - uses: conao3/setup-cask@master
         with:
           version: snapshot
-      
       - name: Install Nix grammar
         run: |
           emacs -batch -l test/scripts/install-nix-grammar.el
-
-      - name: Run tests
+      - name: Run ERT units
         run: make test
-      
       - name: Cleanup
         run: make clean

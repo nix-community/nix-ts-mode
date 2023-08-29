@@ -1,0 +1,12 @@
+# This is used by the action https://github.com/dorny/paths-filter
+
+package-sources: &package-sources
+  - 'nix-ts-mode.el'
+
+test-sources: &test-sources
+  - 'test/*.el'
+  - 'test/**/*.el'
+
+nix-sources: &nix-sources
+  - '*.nix'
+  - '**/*.nix'

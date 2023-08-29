@@ -1,0 +1,69 @@
+name: CI
+
+env:
+  EMACS_VERSIONS: '["29.1", "snapshot", "release-snapshot"]'
+
+on:
+  pull_request:
+    branches:
+      - "trunk"
+  merge_group:
+    branches:
+      - "trunk"
+
+permissions: {}
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    outputs:
+      EMACS_VERSIONS: ${{ steps.set-env.outputs.EMACS_VERSIONS }}
+    steps:
+      - id: set-env
+        run: |
+          echo "EMACS_VERSIONS=${{ env.EMACS_VERSIONS }}" >> "$GITHUB_OUTPUT"
+
+  file-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      package-sources: ${{ steps.changes.outputs.package-sources }}
+      test-sources: ${{ steps.changes.outputs.test-sources }}
+      nix-sources: ${{ steps.changes.outputs.nix-sources }}
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          base: ${{ github.event.pull_request.base.ref || github.event.merge_group.base_ref }}
+          ref: ${{ github.event.pull_request.head.ref || github.event.merge_group.head_ref }}
+          filters: .github/file-filters.yaml
+
+  lint-package:
+    uses: .github/workflows/lint-package.yaml
+    permissions:
+      contents: read
+    needs: [set-env, file-changes]
+    if: needs.file-changes.outputs.package-sources == 'true'
+    secrets: inherit
+    with:
+      emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
+
+  test-package:
+    uses: .github/workflows/test.yaml
+    permissions:
+      contents: read
+    needs: [set-env, file-changes]
+    secrets: inherit
+    with:
+      emacs-versions: ${{ needs.set-env.outputs.EMACS_VERSIONS }}
+
+  lint-nix:
+    uses: .github/workflows/lint-nix.yaml
+    if: needs.file-changes.outputs.nix-sources == 'true'
+    permissions:
+      contents: read
+    needs: file-changes
+    secrets: inherit

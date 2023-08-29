@@ -1,0 +1,53 @@
+name: Lint
+
+on:
+  workflow_call:
+    inputs:
+      nix-config:
+        required: false
+        type: string
+
+permissions: {}
+
+jobs:
+  nixpkgs-fmt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: ${{ inputs.nix-config }}
+      - uses: actions/checkout@v3.6.0
+      - name: Check formatting
+        run: |
+          nix run --inputs-from . nixpkgs#nixpkgs-fmt -- --check .
+
+  statix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: ${{ inputs.nix-config }}
+      - uses: actions/checkout@v3.6.0
+      - name: Static code analysis
+        run: |
+          nix run --inputs-from . nixpkgs#statix -- check .
+
+  deadnix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: ${{ inputs.nix-config }}
+      - uses: actions/checkout@v3.6.0
+      - name: Check for dead code
+        run: |
+          nix run --inputs-from . nixpkgs#deadnix -- -f

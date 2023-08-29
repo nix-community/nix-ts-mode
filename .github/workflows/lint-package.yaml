@@ -2,33 +2,28 @@ name: Lint package
 
 on:
   workflow_call:
-  pull_request:
-    branches:
-      - "trunk"
-    paths:
-      - "**"
-      - "!**.md"
-      - "!**.org"
+    inputs:
+      emacs-versions:
+        required: true
+        type: string
+
+permissions: {}
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
-        emacs_version:
-          - snapshot
-          - release-snapshot
+        emacs_version: ${{ fromJson(inputs.emacs-versions) }}
 
     steps:
-      - uses: actions/checkout@v3.5.3
-
+      - uses: actions/checkout@v3.6.0
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-
       - uses: conao3/setup-cask@master
         with:
           version: snapshot
-
-      - name: Lint
-        run: make package_lint
+      - run: make lint
