@@ -1,4 +1,4 @@
-name: "Validate PR title"
+name: "PR title"
 
 on:
   pull_request_target:
@@ -9,16 +9,15 @@ permissions: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
-
 jobs:
   validate:
+    name: Validate
     permissions:
       contents: read
       pull-requests: read
-    name: Lint title
     runs-on: ubuntu-latest
     steps:
-      - uses: thehanimo/pr-title-checker@0cf5902181e78341bb97bb06646396e5bd354b3f # v1.4.0
+      - uses: thehanimo/pr-title-checker@v1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           configuration_path: ".github/pr-title-checker-config.json"

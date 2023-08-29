@@ -1,0 +1,148 @@
+name: Test and release
+
+env:
+  RELEASE_BODY_KEY: release_body
+  RELEASE_BODY_PATH: RELEASE_BODY.md
+  EMACS_VERSIONS: '["29.1", "snapshot", "release-snapshot"]'
+  EXTRA_NIX_CONFIG: |
+    substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+    trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - "trunk"
+
+jobs:
+  emacs-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      EMACS_VERSIONS: ${{ steps.set-emacs-versions.outputs.EMACS_VERSIONS }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: cachix/install-nix-action@v22
+      - id: set-emacs-versions
+        run: |
+          EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
+          echo "EMACS_VERSIONS=$EMACS_VERSIONS" >> "$GITHUB_OUTPUT"
+
+  lint-package:
+    uses: .github/workflows/lint-package.yaml
+    needs: emacs-versions
+    secrets: inherit
+    permissions:
+      contents: read
+    with:
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
+
+  test-package:
+    uses: .github/workflows/test.yaml
+    needs: emacs-versions
+    secrets: inherit
+    permissions:
+      contents: read
+    with:
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
+
+  check-release:
+    runs-on: ubuntu-latest
+    needs: [lint-package, test-package]
+    permissions:
+      contents: read
+    outputs:
+      current_version: ${{ steps.gen_versions.outputs.CURRENT_VERSION }}
+      next_version: ${{ steps.gen_versions.outputs.NEXT_VERSION }}
+      bump: ${{ steps.gen_versions.outputs.DO_BUMP }}
+    steps:
+      - uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v22
+      - id: gen_versions
+        run: |
+          nix profile install --inputs-from . nixpkgs#convco
+
+          CURRENT_VERSION=$(convco version)
+          NEXT_VERSION=$(convco version -b)
+          
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+
+          if [[ "$CURRENT_VERSION" == "$NEXT_VERSION" ]]; then
+            echo "DO_BUMP=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "DO_BUMP=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  push-release-tag:
+    if: needs.check-release.outputs.bump == 'true'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: check-release
+    outputs:
+      tag: ${{ steps.gen-tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v22
+        with:
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          extra_nix_config: "${{ env.EXTRA_NIX_CONFIG }}"
+      - name: Generate tag
+        id: gen-tag
+        run: echo "tag=v${{ needs.check-release.outputs.next_version }}" >> "$GITHUB_OUTPUT"
+      - name: Bump version
+        run: |
+          find . \
+            -name "*.el" \
+            -exec sed -i -E "s|^(;; Version: ).*\$|\1${{ needs.check-release.outputs.next_version }}|g" {} \;
+          git add -- ./\*.el
+          git commit -m "chore: release ${{ steps.gen-tag.outputs.tag }}"
+          git tag ${{ steps.gen-tag.outputs.tag }}
+          git push
+          git push --tags
+        
+      - name: Generate release body
+        run: |
+          nix profile install --inputs-from . nixpkgs#convco
+
+          convco changelog \
+            -m 1 \
+            -u ${{ steps.gen-tag.outputs.tag }} \
+            --include-hidden-sections \
+            --prefix="" \
+            --output "${{ env.RELEASE_BODY_PATH }}"
+
+          printf "Generated release body...\n\n"
+
+          cat ${{ env.RELEASE_BODY_PATH }}
+      - name: Upload release body
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.RELEASE_BODY_KEY }}
+          path: ${{ env.RELEASE_BODY_PATH }}
+
+  publish-release:
+    runs-on: ubuntu-latest
+    needs: [check-release, push-release-tag]
+    if: needs.check-release.outputs.bump == 'true'
+    permissions:
+      contents: write
+    steps:
+      - name: Download release body
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.RELEASE_BODY_KEY }}
+          path: ${{ env.RELEASE_BODY_PATH }}
+      - name: Publish ${{ needs.push-release-tag.outputs.tag }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.push-release-tag.outputs.tag }}
+          name: ${{ needs.push-release-tag.outputs.tag }}
+          body_path: ${{ env.RELEASE_BODY_PATH }}
