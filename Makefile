@@ -12,7 +12,7 @@ clean:
 test: lisp
 	EMACS=$(EMACS) cask exec ert-runner --reporter ert
 
-package_lint: lisp
+lint: lisp
 	EMACS=$(EMACS) cask emacs \
 		-batch \
 		-l package-lint \
