@@ -3,11 +3,11 @@
         "name": ""
     },
     "CHECKS": {
-        "regexp": "^(feat|fix|docs|test|ci|chore|build)(\\(.+\\))?!?:\\s(NO-JIRA|[A-Z]+-[0-9]+).*$"
+        "regexp": "^(feat|fix|docs|test|ci|chore|build)(\\(.+\\))?!?:\\s(NO-ISSUE|#\\d+).*$"
     },
     "MESSAGES": {
         "success": "PR title is valid.",
         "failure": "PR title is invalid.",
-        "notice": "PR title needs to match the Conventional Commit standard, scoped to a JIRA ticket or \"NO-JIRA\""
+        "notice": "PR title needs to match the Conventional Commit standard, scoped to a GitHub issue or marked as \"NO-ISSUE\""
     }
 }
