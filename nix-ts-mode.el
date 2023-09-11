@@ -84,6 +84,10 @@
       ("with" @font-lock-keyword-face))
      (assert_expression
       ("assert" @font-lock-keyword-face))
+     (inherit
+      ("inherit" @font-lock-keyword-face))
+     (inherit_from
+      ("inherit" @font-lock-keyword-face))
      ((identifier) @font-lock-keyword-face
       (:match
        ,(rx-to-string

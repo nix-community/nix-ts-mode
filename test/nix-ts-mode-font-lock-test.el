@@ -77,15 +77,16 @@
   (check-faces "
 let
   pkgs = {
-    test = \"\";
+    test = { key = \"\"; };
   };
 in rec {
-  test = with pkgs; test;
+  test = with pkgs; { inherit (test) key; };
 }"
-	       '(("let" font-lock-keyword-face)
-		 ("in" font-lock-keyword-face)
-		 ("with" font-lock-keyword-face)
-		 ("rec" font-lock-keyword-face))))
+               '(("let" font-lock-keyword-face)
+                 ("in" font-lock-keyword-face)
+                 ("with" font-lock-keyword-face)
+                 ("rec" font-lock-keyword-face)
+                 ("inherit" font-lock-keyword-face))))
 
 (provide 'nix-ts-mode-font-lock-tests)
 ;;; nix-ts-mode-font-lock-tests.el ends here
