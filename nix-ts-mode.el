@@ -199,6 +199,10 @@
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
 
+    ;; Comments
+    (setq-local comment-start "#")
+    (setq-local comment-padding " ")
+
     (treesit-major-mode-setup)))
 
 (provide 'nix-ts-mode)
