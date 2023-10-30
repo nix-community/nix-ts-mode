@@ -19,18 +19,18 @@
 
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
-  `(let ((treesit-font-lock-level 4))
-     (with-temp-buffer
-       (delay-mode-hooks (nix-ts-mode))
-       ,@body)))
+  `(with-temp-buffer
+     (delay-mode-hooks (nix-ts-mode))
+     ,@body))
 
 (defun check-faces (content pairs)
   ""
   (with-nix-buffer
-   (let ((pos (point)))
-     (insert content)
-     (save-excursion
-       (treesit-font-lock-fontify-region pos (point) t)))
+   (insert content)
+   (save-excursion
+     (setq-local treesit-font-lock-level 4)
+     (treesit-font-lock-recompute-features)
+     (treesit-font-lock-fontify-region (point-min) (point-max) t))
    (dolist (pair pairs)
      (goto-char (point-min))
      (cl-destructuring-bind (string face) pair
