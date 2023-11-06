@@ -19,18 +19,18 @@
 
 (defmacro with-nix-buffer (&rest body)
   "Run `BODY` in the context of a new buffer set to `nix-ts-mode`."
-  `(let ((treesit-font-lock-level 4))
-     (with-temp-buffer
-       (delay-mode-hooks (nix-ts-mode))
-       ,@body)))
+  `(with-temp-buffer
+     (delay-mode-hooks (nix-ts-mode))
+     ,@body))
 
 (defun check-faces (content pairs)
   ""
   (with-nix-buffer
-   (let ((pos (point)))
-     (insert content)
-     (save-excursion
-       (treesit-font-lock-fontify-region pos (point) t)))
+   (insert content)
+   (save-excursion
+     (setq-local treesit-font-lock-level 4)
+     (treesit-font-lock-recompute-features)
+     (treesit-font-lock-fontify-region (point-min) (point-max) t))
    (dolist (pair pairs)
      (goto-char (point-min))
      (cl-destructuring-bind (string face) pair
@@ -80,12 +80,22 @@ let
     test = \"\";
   };
 in rec {
+  inherit pkgs;
   test = with pkgs; test;
 }"
 	       '(("let" font-lock-keyword-face)
+		 ("inherit" font-lock-keyword-face)
 		 ("in" font-lock-keyword-face)
 		 ("with" font-lock-keyword-face)
 		 ("rec" font-lock-keyword-face))))
+
+
+(ert-deftest nix-ts-error ()
+  (check-faces "
+let }
+  "
+	       '(("let" font-lock-warning-face)
+                 ("}" font-lock-warning-face))))
 
 (provide 'nix-ts-mode-font-lock-tests)
 ;;; nix-ts-mode-font-lock-tests.el ends here

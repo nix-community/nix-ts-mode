@@ -36,6 +36,8 @@
   (error "`nix-ts-mode` requires Emacs to be built with tree-sitter support"))
 
 (declare-function treesit-parser-create "treesit.c")
+(declare-function treesit-node-child-by-field-name "treesit.c")
+(declare-function treesit-node-type "treesit.c")
 
 ;; Other
 
@@ -82,6 +84,10 @@
       ("rec" @font-lock-keyword-face))
      (with_expression
       ("with" @font-lock-keyword-face))
+     (inherit
+      ("inherit" @font-lock-keyword-face))
+     (inherit_from
+      ("inherit" @font-lock-keyword-face))
      (assert_expression
       ("assert" @font-lock-keyword-face))
      ((identifier) @font-lock-keyword-face
@@ -151,18 +157,30 @@
    :language 'nix
    :feature 'function
    `((function_expression
-      ":" @font-lock-misc-punctuation-face)))
+      ":" @font-lock-misc-punctuation-face))
 
+   :language 'nix
+   :feature 'error
+   :override t
+   '((ERROR) @font-lock-warning-face))
   "Tree-sitter font-lock settings for `nix-ts-mode'.")
 
 ;; Indentation
 (defvar nix-ts-mode-indent-rules
-  (let ((offset nix-ts-mode-indent-offset))
-    `((nix
-       ((node-is "}") parent-bol 0)
-       ((node-is ")") parent-bol 0)
-       ((node-is "]") parent-bol 0)
-       ((parent-is "parenthesized_expression") parent-bol ,offset)))))
+  `((nix
+     ((parent-is "source_code") column-0 0)
+     ((node-is "]") parent-bol 0)
+     ((node-is ")") parent-bol 0)
+     ((node-is "}") parent-bol 0)
+     ((node-is "binding_set") parent-bol nix-ts-mode-indent-offset)
+     ((node-is "indented_string_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "formals") parent-bol 0)
+     ((parent-is "binding_set") parent-bol 0)
+     ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)))
+  "Tree-sitter indent rules for `nix-ts-mode'.")
 
 ;; Keymap
 (defvar nix-ts-mode-map
@@ -173,15 +191,26 @@
 ;; Syntax map
 (defvar nix-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?#  "<"      table)
+    (modify-syntax-entry ?\n ">"      table)
+    (modify-syntax-entry ?/  ". 124b" table)
+    (modify-syntax-entry ?*  ". 23"   table)
     table)
   "Syntax table for `nix-ts-mode'.")
+
+(defun nix-ts-mode--defun-name (node)
+  "Return the defun name of NODE.
+Return nil if there is no name or if NODE is not a defun node."
+  (pcase (treesit-node-type node)
+    ("binding"
+     (treesit-node-text
+      (treesit-node-child-by-field-name node "attrpath") t))))
 
 ;;;###autoload
 (define-derived-mode nix-ts-mode prog-mode "Nix"
   "Major mode for editing Nix expressions, powered by treesitter.
 
 \\{nix-ts-mode-map}"
-  :group 'nix
   :syntax-table nix-ts-mode--syntax-table
 
   (when (treesit-ready-p 'nix)
@@ -194,10 +223,22 @@
                 '((comment builtin)
                   (keyword string path)
                   (number constant attribute)
-                  (bracket delimiter operator ellipses function)))
+                  (bracket delimiter error operator ellipses function)))
+
+    ;; Comments
+    (setq-local comment-start "# ")
+    (setq-local comment-start-skip "#+\\s-*")
 
     ;; Indentation
     (setq-local treesit-simple-indent-rules nix-ts-mode-indent-rules)
+
+    ;; Imenu.
+    (setq-local treesit-simple-imenu-settings
+                `((nil "\\`binding\\'" nil nil)))
+
+    ;; Navigation.
+    (setq-local treesit-defun-type-regexp (rx (or "binding")))
+    (setq-local treesit-defun-name-function #'nix-ts-mode--defun-name)
 
     (treesit-major-mode-setup)))
 
