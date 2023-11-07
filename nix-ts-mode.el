@@ -177,6 +177,8 @@
      ((parent-is "formals") parent-bol 0)
      ((parent-is "binding_set") parent-bol 0)
      ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "let_expression") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "attrset_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)))
