@@ -166,6 +166,34 @@
   "Tree-sitter font-lock settings for `nix-ts-mode'.")
 
 ;; Indentation
+(defun nix-ts-indent-multiline-string (n parent bol &rest rest)
+  "Return the indent prefix for the current multi-line string line.
+For the first line, this is the previous line offset+nix-indent-offset,
+and for subsequent lines it's the previous line's indentation."
+  ;; If the current line is the first relevant one in the multiline
+  ;; string, indent it to the default level (2 spaces past the
+  ;; previous line's offset):
+  (if (and (equal (treesit-node-child (treesit-node-parent parent) 1)
+                  parent)
+           (<= (count-lines (treesit-node-start parent) (point)) 1))
+      (+ (apply (alist-get 'parent-bol treesit-simple-indent-presets)
+                n parent bol rest)
+         nix-ts-mode-indent-offset)
+    ;; If the current line is already indented to some level, leave it alone:
+    (if (/= bol
+            (save-excursion
+              (beginning-of-line)
+              (point)))
+        bol
+      ;; otherwise, indent to the level of the previous line by default.
+      (save-excursion
+        (forward-line -1)
+        (if (looking-at "\s+")
+            (match-end 0)
+          ;; in case neither line has discernable indentation, just
+          ;; indent to bol
+          bol)))))
+
 (defvar nix-ts-mode-indent-rules
   `((nix
      ((parent-is "source_code") column-0 0)
@@ -173,7 +201,9 @@
      ((node-is ")") parent-bol 0)
      ((node-is "}") parent-bol 0)
      ((node-is "binding_set") parent-bol nix-ts-mode-indent-offset)
-     ((node-is "indented_string_expression") parent-bol nix-ts-mode-indent-offset)
+     ((match "interpolation" "indented_string_expression" nil nil nil) nix-ts-indent-multiline-string 0)
+     ((parent-is "indented_string_expression") parent-bol 0)
+     ((parent-is "string_fragment") nix-ts-indent-multiline-string 0)
      ((parent-is "formals") parent-bol 0)
      ((parent-is "binding_set") parent-bol 0)
      ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
