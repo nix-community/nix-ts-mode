@@ -3,6 +3,7 @@
 #+PROPERTY: LOGGING nil
 
 [[https://melpa.org/#/nix-ts-mode][file:https://melpa.org/packages/nix-ts-mode-badge.svg]]
+[[https://stable.melpa.org/#/nix-ts-mode][file:https://stable.melpa.org/packages/nix-ts-mode-badge.svg]]
 [[https://github.com/remi-gelinas/nix-ts-mode/actions/workflows/test_and_release.yaml][https://img.shields.io/github/actions/workflow/status/remi-gelinas/nix-ts-mode/test_and_release.yaml.svg?label=Tests&event=push&branch=trunk]]
 
 An Emacs major mode for editing Nix expressions, powered by the new
