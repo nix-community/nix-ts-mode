@@ -3,7 +3,7 @@ name: Test and release
 env:
   RELEASE_BODY_KEY: release_body
   RELEASE_BODY_PATH: RELEASE_BODY.md
-  EMACS_VERSIONS: '["29.1", "snapshot", "release-snapshot"]'
+  EMACS_VERSIONS: '["29.1", "29.2", "snapshot", "release-snapshot"]'
   EXTRA_NIX_CONFIG: |
     substituters = https://cache.nixos.org/ https://nix-community.cachix.org
     trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
