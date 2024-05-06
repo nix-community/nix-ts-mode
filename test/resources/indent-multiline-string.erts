@@ -1,0 +1,59 @@
+Name: simple-multiline-string
+
+=-=
+{
+  a = ''
+    hi [
+      test
+    ]
+  '';
+}
+=-=
+{
+  a = ''
+    hi [
+      test
+    ]
+  '';
+}
+=-=-=
+
+Name: multiline-string-with-interpolations
+
+=-=
+{
+  b = "hi";
+  a = ''
+    ${b}
+    but also
+    bye
+  '';
+}
+=-=
+{
+  b = "hi";
+  a = ''
+    ${b}
+    but also
+    bye
+  '';
+}
+=-=-=
+
+Name: multiline-string-with-escaped-interpolations
+
+=-=
+{
+  a = ''
+    what=''${1:-hi}
+    echo "$what"
+  '';
+}
+=-=
+{
+  a = ''
+    what=''${1:-hi}
+    echo "$what"
+  '';
+}
+=-=-=
