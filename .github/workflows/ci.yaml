@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.6.0
       - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
       - id: set-emacs-versions
         run: |
           EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)

@@ -11,9 +11,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
       - uses: actions/checkout@v3.6.0
       - name: Check formatting
         run: |
@@ -24,10 +23,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
       - uses: actions/checkout@v3.6.0
       - name: Static code analysis
         run: |
@@ -38,10 +35,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
       - uses: actions/checkout@v3.6.0
       - name: Check for dead code
         run: |
