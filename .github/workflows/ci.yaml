@@ -1,15 +1,7 @@
 name: CI
 
-env:
-  EXTRA_NIX_CONFIG: |
-    substituters = https://cache.nixos.org/ https://nix-community.cachix.org
-    trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
-
 on:
   pull_request:
-    branches:
-      - "trunk"
-  merge_group:
     branches:
       - "trunk"
 
@@ -24,10 +16,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3.6.0
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: "${{ env.EXTRA_NIX_CONFIG }}"
+      - uses: DeterminateSystems/nix-installer-action@v10
       - id: set-emacs-versions
         run: |
           EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
@@ -47,8 +36,6 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: changes
         with:
-          base: ${{ github.event.pull_request.base.ref || github.event.merge_group.base_ref }}
-          ref: ${{ github.event.pull_request.head.ref || github.event.merge_group.head_ref }}
           filters: .github/file-filters.yaml
 
   lint-package:
@@ -66,6 +53,7 @@ jobs:
     permissions:
       contents: read
     needs: [emacs-versions, file-changes]
+    if: needs.file-changes.outputs.package-sources == 'true'
     secrets: inherit
     with:
       emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}

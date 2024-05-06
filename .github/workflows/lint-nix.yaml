@@ -2,10 +2,6 @@ name: Lint
 
 on:
   workflow_call:
-    inputs:
-      nix-config:
-        required: false
-        type: string
 
 permissions: {}
 
@@ -18,7 +14,6 @@ jobs:
       - uses: cachix/install-nix-action@v22
         with:
           github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
       - uses: actions/checkout@v3.6.0
       - name: Check formatting
         run: |
