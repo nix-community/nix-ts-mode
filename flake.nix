@@ -12,7 +12,7 @@
       forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
     in
     {
-      supportedEmacsVersions = [ "29.1" "snapshot" "release-snapshot" ];
+      supportedEmacsVersions = import ./nix/emacs-versions.nix;
 
       devShells = forAllSystems (system:
         let

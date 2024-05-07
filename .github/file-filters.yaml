@@ -2,6 +2,7 @@
 
 package-sources: &package-sources
   - 'nix-ts-mode.el'
+  - 'nix/emacs-versions.nix'
 
 test-sources: &test-sources
   - 'test/*.el'
