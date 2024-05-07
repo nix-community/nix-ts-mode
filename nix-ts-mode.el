@@ -1,7 +1,7 @@
 ;;; nix-ts-mode.el --- Major mode for Nix expressions, powered by tree-sitter -*- lexical-binding: t -*-
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
-;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
+;; Homepage: https://github.com/nix-community/nix-ts-mode
 ;; Version: 0.1.2
 ;; Keywords: nix languages
 ;; Package-Requires: ((emacs "29.1"))

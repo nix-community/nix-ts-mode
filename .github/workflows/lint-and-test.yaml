@@ -1,0 +1,66 @@
+name: Lint and test
+
+permissions: {}
+
+on:
+  workflow_call:
+
+jobs:
+  emacs-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      EMACS_VERSIONS: ${{ steps.set-emacs-versions.outputs.EMACS_VERSIONS }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
+      - id: set-emacs-versions
+        run: |
+          EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
+          echo "EMACS_VERSIONS=$EMACS_VERSIONS" >> "$GITHUB_OUTPUT"
+
+  file-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      package-sources: ${{ steps.changes.outputs.package-sources }}
+      test-sources: ${{ steps.changes.outputs.test-sources }}
+      nix-sources: ${{ steps.changes.outputs.nix-sources }}
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: .github/file-filters.yaml
+
+  lint-package:
+    uses: ./.github/workflows/lint-package.yaml
+    permissions:
+      contents: read
+    needs: [emacs-versions, file-changes]
+    if: needs.file-changes.outputs.package-sources == 'true'
+    secrets: inherit
+    with:
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
+
+  test-package:
+    uses: ./.github/workflows/test-package.yaml
+    permissions:
+      contents: read
+    needs: [emacs-versions, file-changes]
+    if: needs.file-changes.outputs.package-sources == 'true'
+    secrets: inherit
+    with:
+      emacs-versions: ${{ needs.emacs-versions.outputs.EMACS_VERSIONS }}
+
+  lint-nix:
+    uses: ./.github/workflows/lint-nix.yaml
+    if: needs.file-changes.outputs.nix-sources == 'true'
+    permissions:
+      contents: read
+    needs: file-changes
+    secrets: inherit
