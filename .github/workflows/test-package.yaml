@@ -7,10 +7,6 @@ on:
         required: true
         type: string
 
-  pull_request:
-    branches:
-      - "trunk"
-
 jobs:
   test:
     runs-on: ubuntu-latest

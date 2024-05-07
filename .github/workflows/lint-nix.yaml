@@ -1,4 +1,4 @@
-name: Lint
+name: Lint nix
 
 on:
   workflow_call:
