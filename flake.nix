@@ -2,13 +2,17 @@
   description = "An Emacs major mode for editing Nix expressions, powered by tree-sitter.";
 
   outputs =
-    { systems
-    , nixpkgs-unstable
+    { nixpkgs-unstable
     , pre-commit-nix
     , ...
     }:
     let
-      supportedSystems = import systems;
+      supportedSystems = [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "x86_64-linux"
+      ];
       forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
     in
     {
@@ -43,7 +47,6 @@
 
   inputs = {
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    systems.url = "github:nix-systems/default";
     pre-commit-nix.url = "github:cachix/pre-commit-hooks.nix";
   };
 }
