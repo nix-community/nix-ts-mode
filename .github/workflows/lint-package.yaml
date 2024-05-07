@@ -28,3 +28,17 @@ jobs:
         with:
           version: snapshot
       - run: make lint
+
+  collect-lint:
+    needs: [lint]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all matrix job status
+        if: >-
+          ${{
+                contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+            || contains(needs.*.result, 'skipped')
+          }}
+        run: exit 1
