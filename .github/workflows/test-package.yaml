@@ -7,10 +7,6 @@ on:
         required: true
         type: string
 
-  pull_request:
-    branches:
-      - "trunk"
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,7 +16,7 @@ jobs:
         emacs_version: ${{ fromJson(inputs.emacs-versions) }}
 
     steps:
-      - uses: actions/checkout@v3.6.0
+      - uses: actions/checkout@v4.1.5
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
@@ -34,3 +30,17 @@ jobs:
         run: make test
       - name: Cleanup
         run: make clean
+
+  collect-tests:
+    needs: [test]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all matrix job status
+        if: >-
+          ${{
+                contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+            || contains(needs.*.result, 'skipped')
+          }}
+        run: exit 1

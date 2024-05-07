@@ -1,11 +1,7 @@
-name: Lint
+name: Lint nix
 
 on:
   workflow_call:
-    inputs:
-      nix-config:
-        required: false
-        type: string
 
 permissions: {}
 
@@ -15,11 +11,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
-      - uses: actions/checkout@v3.6.0
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
+      - uses: actions/checkout@v4.1.5
       - name: Check formatting
         run: |
           nix run --inputs-from . nixpkgs#nixpkgs-fmt -- --check .
@@ -29,11 +23,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
-      - uses: actions/checkout@v3.6.0
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
+      - uses: actions/checkout@v4.1.5
       - name: Static code analysis
         run: |
           nix run --inputs-from . nixpkgs#statix -- check .
@@ -43,11 +35,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: cachix/install-nix-action@v22
-        with:
-          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
-          extra_nix_config: ${{ inputs.nix-config }}
-      - uses: actions/checkout@v3.6.0
+      - uses: DeterminateSystems/nix-installer-action@v10
+      - uses: DeterminateSystems/magic-nix-cache-action@v4
+      - uses: actions/checkout@v4.1.5
       - name: Check for dead code
         run: |
           nix run --inputs-from . nixpkgs#deadnix -- -f
