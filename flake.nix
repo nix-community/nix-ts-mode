@@ -20,6 +20,7 @@
             src = ./.;
 
             hooks = {
+              nixpkgs-fmt.enable = true;
               deadnix.enable = true;
               statix.enable = true;
             };
@@ -29,7 +30,7 @@
           default = nixpkgs-unstable.legacyPackages.${system}.mkShell {
             name = "nix-ts-mode-shell";
 
-            packages = with nixpkgs-unstable.legacyPackages.${system}; [ cask python311 ];
+            packages = with nixpkgs-unstable.legacyPackages.${system}; [ nixpkgs-fmt cask python311 ];
 
             shellHook = ''
               ${pre-commit-check.shellHook}
