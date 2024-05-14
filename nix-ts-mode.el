@@ -225,10 +225,10 @@ and for subsequent lines it's the previous line's indentation."
 ;; Syntax map
 (defvar nix-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
-    (modify-syntax-entry ?#  "<"      table)
-    (modify-syntax-entry ?\n ">"      table)
-    (modify-syntax-entry ?/  ". 124b" table)
-    (modify-syntax-entry ?*  ". 23"   table)
+    (modify-syntax-entry ?# "< b" table)
+    (modify-syntax-entry ?\n "> b" table)
+    (modify-syntax-entry ?/ ". 14" table)
+    (modify-syntax-entry ?* ". 23" table)
     table)
   "Syntax table for `nix-ts-mode'.")
 
