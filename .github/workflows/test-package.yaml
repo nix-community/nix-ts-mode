@@ -16,7 +16,7 @@ jobs:
         emacs_version: ${{ fromJson(inputs.emacs-versions) }}
 
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
