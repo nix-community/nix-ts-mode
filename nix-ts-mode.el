@@ -274,7 +274,10 @@ Return nil if there is no name or if NODE is not a defun node."
     (setq-local treesit-defun-type-regexp (rx (or "binding")))
     (setq-local treesit-defun-name-function #'nix-ts-mode--defun-name)
 
-    (treesit-major-mode-setup)))
+    (treesit-major-mode-setup))
+
+  (when (functionp 'derived-mode-add-parents)
+    (derived-mode-add-parents 'nix-ts-mode '(nix-mode))))
 
 (provide 'nix-ts-mode)
 ;;; nix-ts-mode.el ends here
