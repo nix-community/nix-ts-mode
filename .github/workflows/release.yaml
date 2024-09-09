@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Generate changelog
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v4
+        uses: mikepenz/release-changelog-builder-action@v5
         env:
           ignorePreReleases: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
