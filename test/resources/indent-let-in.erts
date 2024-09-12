@@ -35,3 +35,23 @@ let
   in c;
 in z
 =-=-=
+
+Name: let-in-semicolon
+
+=-=
+let
+x = let
+a = b;
+in
+c
+;
+in z
+=-=
+let
+  x = let
+    a = b;
+  in
+    c
+  ;
+in z
+=-=-=

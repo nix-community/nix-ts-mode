@@ -202,6 +202,7 @@ and for subsequent lines it's the previous line's indentation."
      ((node-is "}") parent-bol 0)
      ((node-is "then") parent-bol 0)
      ((node-is "else") parent-bol 0)
+     ((node-is ";") parent-bol 0)
      ((node-is "binding_set") parent-bol nix-ts-mode-indent-offset)
      ((match "interpolation" "indented_string_expression" nil nil nil) nix-ts-indent-multiline-string 0)
      ((node-is "in") parent-bol 0)
