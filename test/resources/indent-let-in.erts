@@ -1,0 +1,57 @@
+Name: empty-let-in
+
+=-=
+let
+  in z
+=-=
+let
+in z
+=-=-=
+
+Name: single-let-in
+
+=-=
+let
+  x = y;
+  in z
+=-=
+let
+  x = y;
+in z
+=-=-=
+
+Name: nested-let-in
+
+=-=
+let
+x = let
+a = b;
+in c;
+in z
+=-=
+let
+  x = let
+    a = b;
+  in c;
+in z
+=-=-=
+
+Name: let-in-semicolon
+
+=-=
+let
+x = let
+a = b;
+in
+c
+;
+in z
+=-=
+let
+  x = let
+    a = b;
+  in
+    c
+  ;
+in z
+=-=-=
