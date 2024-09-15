@@ -79,6 +79,7 @@ let
   pkgs = {
     test = \"\";
   };
+  a = x.y or z;
 in rec {
   inherit pkgs;
   test = with pkgs; test;
@@ -87,7 +88,8 @@ in rec {
 		 ("inherit" font-lock-keyword-face)
 		 ("in" font-lock-keyword-face)
 		 ("with" font-lock-keyword-face)
-		 ("rec" font-lock-keyword-face))))
+		 ("rec" font-lock-keyword-face)
+		 ("or" font-lock-keyword-face))))
 
 
 (ert-deftest nix-ts-error ()
