@@ -98,11 +98,8 @@
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
-     ((identifier) @font-lock-keyword-face
-      (:match
-       ,(rx-to-string
-         `(seq bol "or" eol))
-       @font-lock-keyword-face)))
+     (select_expression
+      ("or" @font-lock-keyword-face)))
 
    :language 'nix
    :feature 'string
