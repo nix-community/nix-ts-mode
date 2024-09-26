@@ -55,3 +55,15 @@ output is identical to the given expression."
                       (lambda ()
                         (nix-ts-mode)
                         (indent-region (point-min) (point-max)))))
+
+(ert-deftest nix-list ()
+  (ert-test-erts-file (ert-resource-file "indent-list.erts")
+                      (lambda ()
+                        (nix-ts-mode)
+                        (indent-region (point-min) (point-max)))))
+
+(ert-deftest nix-attrset ()
+  (ert-test-erts-file (ert-resource-file "indent-attrset.erts")
+                      (lambda ()
+                        (nix-ts-mode)
+                        (indent-region (point-min) (point-max)))))
