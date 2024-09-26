@@ -205,7 +205,6 @@ and for subsequent lines it's the previous line's indentation."
      ((match "interpolation" "indented_string_expression" nil nil nil) nix-ts-indent-multiline-string 0)
      ((parent-is "indented_string_expression") parent-bol 0)
      ((parent-is "string_fragment") nix-ts-indent-multiline-string 0)
-     ((parent-is "formals") parent-bol 0)
      ((parent-is "binding_set") parent-bol 0)
      ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "let_expression") parent-bol nix-ts-mode-indent-offset)
