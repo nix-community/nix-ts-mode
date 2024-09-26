@@ -213,7 +213,7 @@ and for subsequent lines it's the previous line's indentation."
      ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "^formal$") parent-bol nix-ts-mode-indent-offset)))
+     ((parent-is "formals") parent-bol nix-ts-mode-indent-offset)))
   "Tree-sitter indent rules for `nix-ts-mode'.")
 
 ;; Keymap
