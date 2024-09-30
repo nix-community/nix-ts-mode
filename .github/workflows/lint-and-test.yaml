@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - uses: DeterminateSystems/nix-installer-action@v14
       - uses: DeterminateSystems/magic-nix-cache-action@v8
       - id: set-emacs-versions
@@ -31,7 +31,7 @@ jobs:
       test-sources: ${{ steps.changes.outputs.test-sources }}
       nix-sources: ${{ steps.changes.outputs.nix-sources }}
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - uses: dorny/paths-filter@v3
         id: changes
         with:
