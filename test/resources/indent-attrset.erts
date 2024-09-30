@@ -1,0 +1,25 @@
+Name: simple-attrset
+
+=-=
+{
+hello =
+world;
+
+yes =
+"no";
+
+pi =
+3;
+}
+=-=
+{
+  hello =
+    world;
+
+  yes =
+    "no";
+
+  pi =
+    3;
+}
+=-=-=

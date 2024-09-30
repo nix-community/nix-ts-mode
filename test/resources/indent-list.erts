@@ -1,0 +1,15 @@
+Name: simple-list
+
+=-=
+[
+foo
+"bar"
+42
+]
+=-=
+[
+  foo
+  "bar"
+  42
+]
+=-=-=
