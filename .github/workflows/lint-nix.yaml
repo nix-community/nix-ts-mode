@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v15
       - uses: DeterminateSystems/magic-nix-cache-action@v8
       - uses: actions/checkout@v4.2.2
       - name: Check formatting
@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v15
       - uses: DeterminateSystems/magic-nix-cache-action@v8
       - uses: actions/checkout@v4.2.2
       - name: Static code analysis
@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v15
       - uses: DeterminateSystems/magic-nix-cache-action@v8
       - uses: actions/checkout@v4.2.2
       - name: Check for dead code
