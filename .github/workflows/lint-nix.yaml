@@ -12,7 +12,7 @@ jobs:
       contents: read
     steps:
       - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
       - uses: actions/checkout@v4.2.2
       - name: Check formatting
         run: |
@@ -24,7 +24,7 @@ jobs:
       contents: read
     steps:
       - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
       - uses: actions/checkout@v4.2.2
       - name: Static code analysis
         run: |
@@ -36,7 +36,7 @@ jobs:
       contents: read
     steps:
       - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
       - uses: actions/checkout@v4.2.2
       - name: Check for dead code
         run: |
