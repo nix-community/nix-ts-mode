@@ -209,6 +209,8 @@ and for subsequent lines it's the previous line's indentation."
      ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "let_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "attrset_expression") parent-bol nix-ts-mode-indent-offset)
+     ((node-is "inherited_attrs") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "inherited_attrs") parent-bol 0)
      ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)

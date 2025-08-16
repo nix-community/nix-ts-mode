@@ -1,0 +1,17 @@
+Name: simple-inherit
+
+=-=
+pkgs: {
+inherit (pkgs)
+test
+hello
+;
+}
+=-=
+pkgs: {
+  inherit (pkgs)
+    test
+    hello
+  ;
+}
+=-=-=

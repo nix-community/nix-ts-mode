@@ -67,3 +67,9 @@ output is identical to the given expression."
                       (lambda ()
                         (nix-ts-mode)
                         (indent-region (point-min) (point-max)))))
+
+(ert-deftest nix-inherit ()
+  (ert-test-erts-file (ert-resource-file "indent-inherit.erts")
+                      (lambda ()
+                        (nix-ts-mode)
+                        (indent-region (point-min) (point-max)))))
