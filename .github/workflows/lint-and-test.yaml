@@ -13,9 +13,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
+      - uses: actions/checkout@v5.0.0
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - id: set-emacs-versions
         run: |
           EMACS_VERSIONS=$(nix eval --json .#supportedEmacsVersions)
@@ -31,7 +31,7 @@ jobs:
       test-sources: ${{ steps.changes.outputs.test-sources }}
       nix-sources: ${{ steps.changes.outputs.nix-sources }}
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: dorny/paths-filter@v3
         id: changes
         with:

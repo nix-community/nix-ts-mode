@@ -11,9 +11,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
-      - uses: actions/checkout@v4.2.2
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: actions/checkout@v5.0.0
       - name: Check formatting
         run: |
           nix run --inputs-from . nixpkgs#nixpkgs-fmt -- --check .
@@ -23,9 +23,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
-      - uses: actions/checkout@v4.2.2
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: actions/checkout@v5.0.0
       - name: Static code analysis
         run: |
           nix run --inputs-from . nixpkgs#statix -- check .
@@ -35,9 +35,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
-      - uses: actions/checkout@v4.2.2
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: actions/checkout@v5.0.0
       - name: Check for dead code
         run: |
           nix run --inputs-from . nixpkgs#deadnix -- -f

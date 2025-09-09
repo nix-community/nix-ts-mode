@@ -20,7 +20,7 @@ jobs:
         emacs_version: ${{ fromJson(inputs.emacs-versions) }}
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
