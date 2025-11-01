@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v5.0.0
       - name: Static code analysis
         run: |
-          nix run --inputs-from . nixpkgs#statix -- check .
+          nix run --inputs-from . nixpkgs#statix -- check . -i test/highlighting-examples.nix
 
   deadnix:
     runs-on: ubuntu-latest
@@ -40,4 +40,5 @@ jobs:
       - uses: actions/checkout@v5.0.0
       - name: Check for dead code
         run: |
-          nix run --inputs-from . nixpkgs#deadnix -- -f
+          nix run --inputs-from . nixpkgs#deadnix -- -f --exclude test/highlighting-examples.nix
+

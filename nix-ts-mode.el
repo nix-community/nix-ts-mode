@@ -3,7 +3,7 @@
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/nix-community/nix-ts-mode
 ;; Version: 0.1.4
-;; Keywords: nix languages
+;; Keywords: nix languages tree-sitter
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,12 +23,19 @@
 
 ;;; Commentary:
 
-;; A major mode for editing Nix expressions, powered by the new
-;; built-in tree-sitter support in Emacs 29.1.
+;; A major mode for editing Nix expressions, powered by the built-in
+;; tree-sitter support in Emacs 29+.
+;;
+;; Features:
+;; - Complete syntax highlighting for all Nix language constructs
+;; - Semantic highlighting distinctions (variables vs properties, etc.)
+;; - Indentation support
+;;
+;; Requires Emacs 30.1+ for the latest font-lock faces including
+;; font-lock-punctuation-face and other tree-sitter enhancements, however,
+;; it will still provide good coverage on 29.1+.
 
 ;;; Code:
-;; (unless (version< emacs-version "29.1")
-;;   (error "`nix-ts-mode` requires at least Emacs 29 for tree-sitter support"))
 
 (require 'treesit)
 
@@ -53,7 +60,35 @@
 
 (defvar nix-ts--treesit-builtins
   ;; nix eval --impure --expr 'with builtins; filter (x: !(elem x [ "abort" "derivation" "import" "throw" ]) && isFunction builtins.${x}) (attrNames builtins)'
-  '("add" "addErrorContext" "all" "any" "appendContext" "attrNames" "attrValues" "baseNameOf" "bitAnd" "bitOr" "bitXor" "break" "catAttrs" "ceil" "compareVersions" "concatLists" "concatMap" "concatStringsSep" "deepSeq" "derivationStrict" "dirOf" "div" "elem" "elemAt" "fetchGit" "fetchMercurial" "fetchTarball" "fetchTree" "fetchurl" "filter" "filterSource" "findFile" "floor" "foldl'" "fromJSON" "fromTOML" "functionArgs" "genList" "genericClosure" "getAttr" "getContext" "getEnv" "getFlake" "groupBy" "hasAttr" "hasContext" "hashFile" "hashString" "head" "intersectAttrs" "isAttrs" "isBool" "isFloat" "isFunction" "isInt" "isList" "isNull" "isPath" "isString" "length" "lessThan" "listToAttrs" "map" "mapAttrs" "match" "mul" "parseDrvName" "partition" "path" "pathExists" "placeholder" "readDir" "readFile" "removeAttrs" "replaceStrings" "scopedImport" "seq" "sort" "split" "splitVersion" "storePath" "stringLength" "sub" "substring" "tail" "toFile" "toJSON" "toPath" "toString" "toXML" "trace" "traceVerbose" "tryEval" "typeOf" "unsafeDiscardOutputDependency" "unsafeDiscardStringContext" "unsafeGetAttrPos" "zipAttrsWith"))
+  ;; Also includes primops (__* functions)
+  '("add" "addErrorContext" "all" "any" "appendContext" "attrNames" "attrValues" "baseNameOf"
+    "bitAnd" "bitOr" "bitXor" "break" "catAttrs" "ceil" "compareVersions" "concatLists" "concatMap"
+    "concatStringsSep" "deepSeq" "derivation" "derivationStrict" "dirOf" "div" "elem" "elemAt"
+    "fetchGit" "fetchMercurial" "fetchTarball" "fetchTree" "fetchurl" "filter" "filterSource"
+    "findFile" "floor" "foldl'" "fromJSON" "fromTOML" "functionArgs" "genList" "genericClosure"
+    "getAttr" "getContext" "getEnv" "getFlake" "groupBy" "hasAttr" "hasContext" "hashFile"
+    "hashString" "head" "intersectAttrs" "isAttrs" "isBool" "isFloat" "isFunction" "isInt" "isList"
+    "isNull" "isPath" "isString" "length" "lessThan" "listToAttrs" "map" "mapAttrs" "match" "mul"
+    "parseDrvName" "partition" "path" "pathExists" "placeholder" "readDir" "readFile" "removeAttrs"
+    "replaceStrings" "scopedImport" "seq" "sort" "split" "splitVersion" "storePath" "stringLength"
+    "sub" "substring" "tail" "toFile" "toJSON" "toPath" "toString" "toXML" "trace" "traceVerbose"
+    "tryEval" "typeOf" "unsafeDiscardOutputDependency" "unsafeDiscardStringContext"
+    "unsafeGetAttrPos" "zipAttrsWith"
+    ;; primops (__<tab> in nix repl)
+    "__add" "__addErrorContext" "__all" "__any" "__appendContext" "__attrNames" "__attrValues"
+    "__baseNameOf" "__bitAnd" "__bitOr" "__bitXor" "__catAttrs" "__ceil" "__compareVersions"
+    "__concatLists" "__concatMap" "__concatStringsSep" "__currentSystem" "__currentTime" "__deepSeq"
+    "__div" "__elem" "__elemAt" "__fetchurl" "__filter" "__filterSource" "__findFile" "__floor"
+    "__foldl'" "__fromJSON" "__functionArgs" "__genList" "__genericClosure" "__getAttr"
+    "__getContext" "__getEnv" "__getFlake" "__groupBy" "__hasAttr" "__hasContext" "__hashFile"
+    "__hashString" "__head" "__intersectAttrs" "__isAttrs" "__isBool" "__isFloat" "__isFunction"
+    "__isInt" "__isList" "__isPath" "__isString" "__langVersion" "__length" "__lessThan"
+    "__listToAttrs" "__mapAttrs" "__match" "__mul" "__nixPath" "__nixVersion" "__parseDrvName"
+    "__partition" "__path" "__pathExists" "__placeholder" "__readDir" "__readFile" "__removeAttrs"
+    "__replaceStrings" "__seq" "__sort" "__split" "__splitVersion" "__storeDir" "__storePath"
+    "__stringLength" "__sub" "__substring" "__tail" "__toFile" "__toJSON" "__toPath" "__toString"
+    "__toXML" "__trace" "__traceVerbose" "__tryEval" "__typeOf" "__unsafeDiscardOutputDependency"
+    "__unsafeDiscardStringContext" "__unsafeGetAttrPos" "__zipAttrsWith"))
 
 (defvar nix-ts--treesit-constants
   ;; nix eval --impure --expr 'with builtins; filter (x: !(isFunction builtins.${x} || isBool builtins.${x})) (attrNames builtins)'
@@ -76,8 +111,12 @@
 
    :language 'nix
    :feature 'keyword
+   :override t
    `((let_expression
       (["let" "in"] @font-lock-keyword-face))
+     ;; Deprecated let attrset expression (let { body = ...; })
+     (let_attrset_expression
+      ("let" @font-lock-keyword-face))
      (if_expression
       ["if" "then" "else"] @font-lock-keyword-face)
      (rec_attrset_expression
@@ -90,11 +129,12 @@
       ("inherit" @font-lock-keyword-face))
      (assert_expression
       ("assert" @font-lock-keyword-face))
-     ((identifier) @font-lock-keyword-face
+     ;; Special keywords: throw, abort, import
+     ((variable_expression name: (identifier) @font-lock-keyword-face)
       (:match
        ,(rx-to-string
-         `(seq bol (or "throw" "abort")
-               eol))
+         `(seq bol (or "throw" "abort" "import")
+           eol))
        @font-lock-keyword-face))
 
      ;; "or" is technically an operator, but we fontify it as a keyword
@@ -109,52 +149,166 @@
       ("\"" @font-lock-string-face))
      (indented_string_expression
       ("''" @font-lock-string-face))
+     ;; Escape sequences in strings
+     (escape_sequence) @font-lock-escape-face
+     ;; Dollar escape in indented strings (''$)
+     (dollar_escape) @font-lock-escape-face
      (interpolation
-      (["${" "}"] @font-lock-misc-punctuation-face)))
+      (["${" "}"] @font-lock-punctuation-face)))
 
    :language 'nix
    :feature 'operator
    `((binary_expression operator: _ @font-lock-operator-face)
-     (unary_expression operator: _ @font-lock-operator-face))
+     (unary_expression operator: _ @font-lock-operator-face)
+     ;; has_attr_expression (x ? y to test if attribute exists)
+     (has_attr_expression operator: _ @font-lock-operator-face)
+     ;; @ and ? operators
+     ["@" "?" "="] @font-lock-operator-face)
 
    :language 'nix
    :feature 'number
-   `([(integer_expression) (float_expression)] @font-lock-constant-face)
+   `([(integer_expression) (float_expression)] @font-lock-number-face)
 
    :language 'nix
    :feature 'path
-   `((path_expression
-      (path_fragment) @font-lock-string-face))
+   `(;; Regular paths
+     (path_expression) @font-lock-constant-face
+     ;; Home paths (~/)
+     (hpath_expression) @font-lock-constant-face
+     ;; Store paths (<nixpkgs>)
+     (spath_expression) @font-lock-constant-face)
+
+   :language 'nix
+   :feature 'uri
+   `((uri_expression) @font-lock-string-face)
+
+   :language 'nix
+   :feature 'parameter
+   `(;; Function parameters in formals ({ x, y, ... })
+     (formal name: (identifier) @font-lock-variable-name-face)
+     ;; Universal function parameter (x: body) - simple case without destructuring
+     (function_expression
+      universal: (identifier) @font-lock-variable-name-face)
+     ;; @ pattern operator
+     (function_expression
+      "@" @font-lock-operator-face))
+
+   ;; At-pattern binding needs override to take precedence over universal parameter
+   :language 'nix
+   :feature 'parameter-atpattern
+   :override t
+   `(;; @ pattern identifier - forward order: args@{ x, y }
+     ;; Use type-face for visual distinction - it's the "base object" containing all params
+     (function_expression
+      universal: (identifier) @font-lock-type-face
+      "@")
+     ;; @ pattern identifier - reverse order: { x, y }@opts
+     (function_expression
+      "@"
+      universal: (identifier) @font-lock-type-face))
+
+   :language 'nix
+   :feature 'function-call
+   `(;; Function calls: highlight function name in apply_expression
+     (apply_expression
+      function: (variable_expression
+                 name: (identifier) @font-lock-function-call-face))
+     ;; Function calls with select_expression (builtins.map, lib.mkOption, etc.)
+     (apply_expression
+      function: (select_expression
+                 attrpath: (attrpath
+                            (identifier) @font-lock-function-call-face :anchor))))
+
+   :language 'nix
+   :feature 'property
+   `(;; Base variable in select expressions - use type-face for visual distinction
+     ;; (Nix has no type system, so this face is available and visually distinct)
+     (select_expression
+      expression: (variable_expression
+                   name: (identifier) @font-lock-type-face))
+     ;; Property access in select expressions - the MEMBERS (obj.property)
+     (select_expression
+      attrpath: (attrpath
+                 (identifier) @font-lock-property-use-face))
+     ;; Binding attributes in attrsets (all identifiers in the path)
+     (binding_set
+      (binding
+       attrpath: (attrpath
+                  (identifier) @font-lock-property-name-face)))
+     ;; Source in inherit_from - use type-face for visual distinction (inherit (SOURCE) attrs)
+     (inherit_from
+      (variable_expression
+       name: (identifier) @font-lock-type-face))
+     ;; Inherited attributes FROM a source (inherit (pkgs) hello) - these are properties
+     (inherit_from
+      attrs: (inherited_attrs
+              (identifier) @font-lock-property-use-face)))
 
    :language 'nix
    :feature 'builtin
-   `((variable_expression name: (identifier) @font-lock-builtin-face
+   :override t
+   `(;; Builtin functions (standalone)
+     (variable_expression name: (identifier) @font-lock-builtin-face
                           (:match
                            ,(rx-to-string
                              `(seq bol (or ,@nix-ts--treesit-builtins)
-                                   eol))
-                           @font-lock-builtin-face)))
+                               eol))
+                           @font-lock-builtin-face))
+     ;; Builtin functions with builtins prefix (builtins.map, etc.)
+     (select_expression
+      expression: (variable_expression
+                   name: (identifier) @_builtins
+                   (:equal @_builtins "builtins"))
+      attrpath: (attrpath
+                 attr: (identifier) @font-lock-builtin-face)))
+
    :language 'nix
    :feature 'constant
-   `((variable_expression name: (identifier) @font-lock-constant-face
+   :override t
+   `(;; Language constants (boolean)
+     (variable_expression name: (identifier) @font-lock-constant-face
                           (:match
                            ,(rx-to-string
                              `(seq bol (or ,@nix-ts--treesit-constants "true" "false")
-                                   eol))
+                               eol))
                            @font-lock-constant-face)))
+
    :language 'nix
-   :feature 'attribute
-   `((attrpath
-      (identifier) @font-lock-variable-name-face))
+   :feature 'definition
+   :override t
+   `(;; Function definitions (name = x: y;)
+     (binding
+      attrpath: (attrpath
+                 (identifier) @font-lock-function-name-face :anchor)
+      expression: (function_expression)))
+
+   :language 'nix
+   :feature 'variable
+   `(;; General variable references
+     (variable_expression
+      name: (identifier) @font-lock-variable-use-face)
+     ;; Plain inherit (inherit x y z) - these create NEW variable bindings
+     (inherit
+      attrs: (inherited_attrs
+              (identifier) @font-lock-variable-name-face)))
+
+   :language 'nix
+   :feature 'paren-base
+   :override t
+   `(;; Parenthesized base in select - highlight parens with type-face for visual grouping
+     ;; This overrides bracket-face to make the base stand out like simple variable bases
+     (select_expression
+      expression: (parenthesized_expression
+                   ["(" ")"] @font-lock-type-face)))
 
    :language 'nix
    :feature 'ellipses
-   `((ellipses) @font-lock-misc-punctuation-face)
+   `((ellipses) @font-lock-punctuation-face)
 
    :language 'nix
-   :feature 'function
+   :feature 'punctuation
    `((function_expression
-      ":" @font-lock-misc-punctuation-face))
+      ":" @font-lock-punctuation-face))
 
    :language 'nix
    :feature 'error
@@ -255,10 +409,10 @@ Return nil if there is no name or if NODE is not a defun node."
     (setq-local treesit-font-lock-settings nix-ts-mode--font-lock-settings)
 
     (setq-local treesit-font-lock-feature-list
-                '((comment builtin)
-                  (keyword string path)
-                  (number constant attribute)
-                  (bracket delimiter error operator ellipses function)))
+                '((comment builtin constant)
+                  (string path uri)
+                  (number operator definition function-call keyword)
+                  (parameter property variable bracket delimiter ellipses punctuation paren-base parameter-atpattern error)))
 
     ;; Comments
     (setq-local comment-start "# ")

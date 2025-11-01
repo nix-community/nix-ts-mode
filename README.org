@@ -6,12 +6,20 @@
 [[https://stable.melpa.org/#/nix-ts-mode][file:https://stable.melpa.org/packages/nix-ts-mode-badge.svg]]
 [[https://github.com/nix-community/nix-ts-mode/actions/workflows/trunk.yaml][https://img.shields.io/github/actions/workflow/status/nix-community/nix-ts-mode/trunk.yaml.svg?label=Trunk&event=push&branch=trunk]]
 
-An Emacs major mode for editing Nix expressions, powered by the new
-built-in tree-sitter support in Emacs 29 and the community-maintained [[https://github.com/nix-community/tree-sitter-nix][Nix tree-sitter grammar]].
+An Emacs major mode for editing Nix expressions, powered by the built-in
+tree-sitter support in Emacs 29+ and the community-maintained [[https://github.com/nix-community/tree-sitter-nix][Nix tree-sitter grammar]].
+
+*Features:*
+- Syntax highlighting for all Nix language constructs
+- Semantic distinctions (variables vs properties, function calls vs definitions)
+- 100% tree-sitter-nix grammar coverage
+- Comprehensive tests
+
+*Requirements:* Emacs 29+ with tree-sitter support, 30.x includes more improvements.
 
 ** Usage
 
-~nix-ts-mode~ only provides syntax highlighting for now, but will eventually support other tree-sitter powered features such as sexp-movement and smart indenting.
+~nix-ts-mode~ provides comprehensive syntax highlighting and indentation for Nix files.
 After installing, enable the mode for Nix files like so:
 
 #+BEGIN_SRC emacs-lisp
@@ -25,3 +33,49 @@ Or with ~use-package~:
     (use-package nix-ts-mode
      :mode "\\.nix\\'")
 #+END_SRC
+
+*** Maximum Highlighting
+
+For the best syntax highlighting experience with all 19 font-lock faces, set the font-lock level to 4 (maximum):
+
+#+BEGIN_SRC emacs-lisp
+    ;; Add to your init.el before loading nix-ts-mode
+    (setq treesit-font-lock-level 4)
+#+END_SRC
+
+This enables:
+- Fine-grained semantic distinctions (variables vs properties)
+- Function parameter highlighting
+- Punctuation and bracket highlighting
+- Complete visual clarity
+- below is a list of what is included at each level
+- ~test/highlighting-example.nix~ can be use to see the effects of the levels.
+
+**** Level 1 (Essential)
+- comment
+- builtin
+- constant
+
+**** Level 2 (Literals)
+- string
+- path
+- uri
+
+**** Level 3 (Semantic)
+- number
+- operator
+- definition
+- function-call
+- keyword
+
+**** Level 4 (Decorative)
+- parameter
+- property
+- variable
+- bracket
+- delimiter
+- ellipses
+- punctuation
+- **paren-base** (override)
+- **parameter-atpattern** (override)
+- error

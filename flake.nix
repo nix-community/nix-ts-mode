@@ -18,15 +18,22 @@
     {
       supportedEmacsVersions = import ./nix/emacs-versions.nix;
 
-      devShells = forAllSystems (system:
+      devShells = forAllSystems (
+        system:
         let
           pre-commit-check = pre-commit-nix.lib.${system}.run {
             src = ./.;
 
             hooks = {
               nixpkgs-fmt.enable = true;
-              deadnix.enable = true;
-              statix.enable = true;
+              deadnix = {
+                enable = true;
+                excludes = [ "test/highlighting-examples.nix" ];
+              };
+              statix = {
+                enable = true;
+                settings.ignore = [ "test/highlighting-examples.nix" ];
+              };
             };
           };
         in
@@ -34,13 +41,18 @@
           default = nixpkgs-unstable.legacyPackages.${system}.mkShell {
             name = "nix-ts-mode-shell";
 
-            packages = with nixpkgs-unstable.legacyPackages.${system}; [ nixpkgs-fmt cask python311 ];
+            packages = with nixpkgs-unstable.legacyPackages.${system}; [
+              nixpkgs-fmt
+              cask
+              python312
+            ];
 
             shellHook = ''
               ${pre-commit-check.shellHook}
             '';
           };
-        });
+        }
+      );
 
       formatter = forAllSystems (system: nixpkgs-unstable.legacyPackages.${system}.nixpkgs-fmt);
     };
