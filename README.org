@@ -36,7 +36,7 @@ Or with ~use-package~:
 
 *** Maximum Highlighting
 
-For the best syntax highlighting experience with all 19 font-lock faces, set the font-lock level to 4 (maximum):
+For the best syntax highlighting experience with the widest selection of font-lock faces, set the font-lock level to 4 (maximum):
 
 #+BEGIN_SRC emacs-lisp
     ;; Add to your init.el before loading nix-ts-mode
