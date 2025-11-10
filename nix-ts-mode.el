@@ -2,7 +2,7 @@
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/nix-community/nix-ts-mode
-;; Version: 0.1.4
+;; Version: 0.1.5
 ;; Keywords: nix languages tree-sitter
 ;; Package-Requires: ((emacs "29.1"))
 
