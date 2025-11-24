@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.0
       - name: Check formatting
         run: |
           nix run --inputs-from . nixpkgs#nixpkgs-fmt -- --check .
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.0
       - name: Static code analysis
         run: |
           nix run --inputs-from . nixpkgs#statix -- check . -i test/highlighting-examples.nix
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.0
       - name: Check for dead code
         run: |
           nix run --inputs-from . nixpkgs#deadnix -- -f --exclude test/highlighting-examples.nix
