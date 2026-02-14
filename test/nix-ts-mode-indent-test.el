@@ -73,3 +73,9 @@ output is identical to the given expression."
                       (lambda ()
                         (nix-ts-mode)
                         (indent-region (point-min) (point-max)))))
+
+(ert-deftest nix-func-expr ()
+  (ert-test-erts-file (ert-resource-file "indent-func-expr.erts")
+                      (lambda ()
+                        (nix-ts-mode)
+                        (indent-region (point-min) (point-max)))))

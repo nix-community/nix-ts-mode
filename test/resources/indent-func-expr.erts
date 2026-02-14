@@ -1,0 +1,21 @@
+Name: simple-func-expr
+
+=-=
+{
+foo = (
+z:
+x: {
+y = x + z;
+}
+);
+}
+=-=
+{
+  foo = (
+    z:
+    x: {
+      y = x + z;
+    }
+  );
+}
+=-=-=
