@@ -347,29 +347,40 @@ and for subsequent lines it's the previous line's indentation."
 
 (defvar nix-ts-mode-indent-rules
   `((nix
-     ((parent-is "function_expression") parent-bol 0)
-     ((parent-is "source_code") column-0 0)
-     ((node-is "]") parent-bol 0)
-     ((node-is ")") parent-bol 0)
-     ((node-is "}") parent-bol 0)
-     ((node-is "then") parent-bol 0)
-     ((node-is "else") parent-bol 0)
-     ((node-is ";") parent-bol 0)
+     ((parent-is "^source_code$") column-0 0)
+     
+     ;; Non-indented strings are untouched.
+     ((n-p-gp nil "^string_fragment$" "^string_expression$") no-indent 0)
+     ((match "^\"$" "^string_expression$" nil nil nil) no-indent 0)
+     
+     ((n-p-gp nil "^string_fragment$" "^indented_string_expression$") nix-ts-indent-multiline-string 0)
+     ((match "^interpolation$" "^indented_string_expression$" nil nil nil) nix-ts-indent-multiline-string 0)
+
+     ;; Unlike in every other place, a semicolon in an inherit node should be indented.
+     ((match "^;$" "^inherit\\(_from\\)?$" nil nil nil) parent-bol nix-ts-mode-indent-offset)
+
+     ((node-is "^)$") parent-bol 0)
+     ((node-is "^,$") parent-bol 0)
+     ((node-is "^]$") parent-bol 0)
+     ((node-is "^;$") parent-bol 0)
+     ((node-is "^else$") parent-bol 0)
      ((node-is "^in$") parent-bol 0)
-     ((node-is "binding_set") parent-bol nix-ts-mode-indent-offset)
-     ((match "interpolation" "indented_string_expression" nil nil nil) nix-ts-indent-multiline-string 0)
-     ((parent-is "indented_string_expression") parent-bol 0)
-     ((parent-is "string_fragment") nix-ts-indent-multiline-string 0)
-     ((parent-is "binding_set") parent-bol 0)
-     ((parent-is "binding") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "let_expression") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "attrset_expression") parent-bol nix-ts-mode-indent-offset)
-     ((node-is "inherited_attrs") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "inherited_attrs") parent-bol 0)
-     ((parent-is "list_expression") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "apply_expression") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "parenthesized_expression") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "formals") parent-bol nix-ts-mode-indent-offset)))
+     ((node-is "^then$") parent-bol 0)
+     ((node-is "^}$") parent-bol 0)
+     ((match nil "^let_expression" "^body$" nil nil) parent-bol 0)
+     
+     ((parent-is "^apply_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^attrset_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^binding$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^formals$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^if_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^inherit\\(_from\\)?$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^interpolation$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^let_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^list_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^parenthesized_expression$") parent-bol nix-ts-mode-indent-offset)
+     
+     (catch-all parent-bol 0)))
   "Tree-sitter indent rules for `nix-ts-mode'.")
 
 ;; Keymap

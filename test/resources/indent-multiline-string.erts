@@ -1,4 +1,28 @@
-Name: simple-multiline-string
+Name: multiline-string
+
+=-=
+{
+  a = "
+indentation
+ is not stripped
+     in these strings
+so it should
+   not be changed
+      ";
+}
+=-=
+{
+  a = "
+indentation
+ is not stripped
+     in these strings
+so it should
+   not be changed
+      ";
+}
+=-=-=
+
+Name: simple-indented-string
 
 =-=
 {
@@ -18,7 +42,7 @@ Name: simple-multiline-string
 }
 =-=-=
 
-Name: multiline-string-with-interpolations
+Name: indented-string-with-interpolations
 
 =-=
 {
@@ -40,7 +64,7 @@ Name: multiline-string-with-interpolations
 }
 =-=-=
 
-Name: multiline-string-with-escaped-interpolations
+Name: indented-string-with-escaped-interpolations
 
 =-=
 {
