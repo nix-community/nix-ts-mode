@@ -43,7 +43,7 @@
 
             packages = with nixpkgs-unstable.legacyPackages.${system}; [
               nixpkgs-fmt
-              cask
+              emacs.pkgs.cask
               python312
             ];
 
