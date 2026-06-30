@@ -1,4 +1,4 @@
-;;; nix-ts-mode-font-lock-tests.el --- Font lock tests for `nix-ts-mode`. -*- lexical-binding: t -*-
+;;; nix-ts-mode-font-lock-test.el --- Font lock tests for `nix-ts-mode`. -*- lexical-binding: t -*-
 
 ;; Maintainer: Remi Gelinas <mail@remigelin.as>
 ;; Homepage: https://github.com/remi-gelinas/nix-ts-mode
@@ -291,5 +291,5 @@ let }
   (check-faces "let { x = 1; body = x; }"
                '(("let" font-lock-keyword-face))))
 
-(provide 'nix-ts-mode-font-lock-tests)
-;;; nix-ts-mode-font-lock-tests.el ends here
+(provide 'nix-ts-mode-font-lock-test)
+;;; nix-ts-mode-font-lock-test.el ends here
