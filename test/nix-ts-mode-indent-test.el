@@ -79,3 +79,5 @@ output is identical to the given expression."
                       (lambda ()
                         (nix-ts-mode)
                         (indent-region (point-min) (point-max)))))
+
+(provide 'nix-ts-mode-indent-test)
