@@ -23,3 +23,23 @@ pi =
     3;
 }
 =-=-=
+
+Name: attrset-with-comments
+
+=-=
+{
+foo = {
+# foo
+enable = true; #foo
+bar = true;
+};
+}
+=-=
+{
+  foo = {
+    # foo
+    enable = true; #foo
+    bar = true;
+  };
+}
+=-=-=

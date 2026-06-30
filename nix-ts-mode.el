@@ -345,6 +345,13 @@ and for subsequent lines it's the previous line's indentation."
           ;; indent to bol
           bol)))))
 
+(defun nix-ts-mode--prev-sibling-not-comment (node parent bol &rest _)
+  (let ((tmp (treesit-node-prev-sibling node t)))
+    (while (and tmp
+                (string= "comment" (treesit-node-type tmp)))
+      (setf tmp (treesit-node-prev-sibling tmp t)))
+    (treesit-node-start tmp)))
+
 (defvar nix-ts-mode-indent-rules
   `((nix
      ((parent-is "^source_code$") column-0 0)
@@ -379,7 +386,9 @@ and for subsequent lines it's the previous line's indentation."
      ((parent-is "^let_expression$") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "^list_expression$") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "^parenthesized_expression$") parent-bol nix-ts-mode-indent-offset)
-     
+
+     ((and (parent-is "^binding_set$") prev-sibling) nix-ts-mode--prev-sibling-not-comment 0)
+
      (catch-all parent-bol 0)))
   "Tree-sitter indent rules for `nix-ts-mode'.")
 

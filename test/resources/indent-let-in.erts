@@ -20,6 +20,33 @@ let
 in z
 =-=-=
 
+Name: single-let-in-multiple-bindings
+
+=-=
+let x = y;
+      v = w;
+  in z
+=-=
+let x = y;
+    v = w;
+in z
+=-=-=
+
+Name: single-let-in-multiple-bindings-with-coments
+
+=-=
+let x = y; # test1
+      # test2
+      v = w;
+  in z
+=-=
+let x = y; # test1
+    # test2
+    v = w;
+in z
+=-=-=
+
+
 Name: nested-let-in
 
 =-=
