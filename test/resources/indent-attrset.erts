@@ -24,6 +24,33 @@ pi =
 }
 =-=-=
 
+Name: rec-attrset
+
+=-=
+rec {
+hello =
+world;
+
+yes =
+"no";
+
+pi =
+3;
+}
+=-=
+rec {
+  hello =
+    world;
+
+  yes =
+    "no";
+
+  pi =
+    3;
+}
+=-=-=
+
+
 Name: attrset-with-comments
 
 =-=

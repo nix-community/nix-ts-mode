@@ -377,7 +377,7 @@ and for subsequent lines it's the previous line's indentation."
      ((match nil "^let_expression" "^body$" nil nil) parent-bol 0)
      
      ((parent-is "^apply_expression$") parent-bol nix-ts-mode-indent-offset)
-     ((parent-is "^attrset_expression$") parent-bol nix-ts-mode-indent-offset)
+     ((parent-is "^\\(?:rec_\\)?attrset_expression$") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "^binding$") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "^formals$") parent-bol nix-ts-mode-indent-offset)
      ((parent-is "^if_expression$") parent-bol nix-ts-mode-indent-offset)
