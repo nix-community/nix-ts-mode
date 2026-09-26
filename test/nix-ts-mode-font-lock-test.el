@@ -291,5 +291,19 @@ let }
   (check-faces "let { x = 1; body = x; }"
                '(("let" font-lock-keyword-face))))
 
+(ert-deftest nix-ts-multi-line-string-as-sexp ()
+  (with-nix-buffer
+   (save-excursion
+     (insert
+      "''foo
+foo ${foo.bar} bar
+bar''"))
+   (syntax-propertize (point-max))
+   (goto-char (point-min))
+   ;; try with `forward-sexp-default-function'/equivalence on older Emacs
+   (dlet ((forward-sexp-function nil))
+    (forward-sexp 1))
+   (should (eobp))))
+
 (provide 'nix-ts-mode-font-lock-test)
 ;;; nix-ts-mode-font-lock-test.el ends here
